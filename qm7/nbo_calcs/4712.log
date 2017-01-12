@@ -1,0 +1,2435 @@
+
+                                 *****************
+                                 * O   R   C   A *
+                                 *****************
+
+           --- An Ab Initio, DFT and Semiempirical electronic structure package ---
+
+                  #######################################################
+                  #                        -***-                        #
+                  #  Department of molecular theory and spectroscopy    #
+                  #              Directorship: Frank Neese              #
+                  # Max Planck Institute for Chemical Energy Conversion #
+                  #                  D-45470 Muelheim/Ruhr              #
+                  #                       Germany                       #
+                  #                                                     #
+                  #                  All rights reserved                #
+                  #                        -***-                        #
+                  #######################################################
+
+
+                         Program Version 3.0.3 - RELEASE   -
+
+
+ With contributions from (in alphabetic order):
+   Ute Becker             : Parallelization
+   Dmytro Bykov           : SCF Hessian
+   Dmitry Ganyushin       : Spin-Orbit,Spin-Spin,Magnetic field MRCI
+   Andreas Hansen         : Spin unrestricted coupled pair/coupled cluster methods
+   Dimitrios Liakos       : Extrapolation schemes; parallel MDCI
+   Robert Izsak           : Overlap fitted RIJCOSX, COSX-SCS-MP3
+   Christian Kollmar      : KDIIS, OOCD, Brueckner-CCSD(T), CCSD density
+   Simone Kossmann        : Meta GGA functionals, TD-DFT gradient, OOMP2, MP2 Hessian
+   Taras Petrenko         : DFT Hessian,TD-DFT gradient, ASA and ECA modules, normal mode analysis, Resonance Raman, ABS, FL, XAS/XES, NRVS
+   Christoph Reimann      : Effective Core Potentials
+   Michael Roemelt        : Restricted open shell CIS
+   Christoph Riplinger    : Improved optimizer, TS searches, QM/MM, DLPNO-CCSD
+   Barbara Sandhoefer     : DKH picture change effects
+   Igor Schapiro          : Molecular dynamics
+   Kantharuban Sivalingam : CASSCF convergence, NEVPT2
+   Boris Wezisla          : Elementary symmetry handling
+   Frank Wennmohs         : Technical directorship
+
+
+ We gratefully acknowledge several colleagues who have allowed us to
+ interface, adapt or use parts of their codes:
+   Stefan Grimme, W. Hujo, H. Kruse, T. Risthaus : VdW corrections, initial TS optimization,
+                                                   DFT functionals, gCP
+   Ed Valeev                                     : LibInt (2-el integral package), F12 methods
+   Garnet Chan, S. Sharma, R. Olivares           : DMRG
+   Ulf Ekstrom                                   : XCFun DFT Library
+   Mihaly Kallay                                 : mrcc  (arbitrary order and MRCC methods)
+   Andreas Klamt, Michael Diedenhofen            : otool_cosmo (COSMO solvation model)
+   Frank Weinhold                                : gennbo (NPA and NBO analysis)
+   Christopher J. Cramer and Donald G. Truhlar   : smd solvation model
+
+
+ Your calculation uses the libint2 library for the computation of 2-el integrals
+ For citations please refer to: http://libint.valeyev.net
+
+ This ORCA versions uses:
+   CBLAS   interface :  Fast vector & matrix operations
+   LAPACKE interface :  Fast linear algebra routines
+   SCALAPACK package :  Parallel linear algebra routines
+
+
+Your calculation utilizes the basis: Ahlrichs-VDZ
+Cite in your paper:
+H - Kr: A. Schaefer, H. Horn and R. Ahlrichs, J. Chem. Phys. 97, 2571 (1992).
+
+Your calculation utilizes the basis: Ahlrichs SVPalls1+f
+Cite in your paper:
+Rb - Xe: A. Schaefer, C. Huber and R. Ahlrichs, J. Chem. Phys. 100, 5829 (1994).
+
+================================================================================
+                                        WARNINGS
+                       Please study these warnings very carefully!
+================================================================================
+Now building the actual basis set
+
+
+INFO   : the flag for use of LIBINT has been found!
+
+================================================================================
+                                       INPUT FILE
+================================================================================
+NAME = 4712.inp
+|  1> ! RI PBE def2-SVP def2-SVP/J NBO PAL2
+|  2> % maxcore 2000
+|  3> % output
+|  4>     # printlevel mini
+|  5>     print[ P_Basis ] 0
+|  6>     print[ P_SCFInfo ] 1
+|  7>     print[ P_SCFIterInfo ] 1
+|  8>     print[ P_OrbEn ] 0
+|  9>     print[ P_Cartesian ] 0
+| 10> end
+| 11> *xyz 0 1
+| 12>  C        1.0672350000    -0.0711740000    -0.0847550000 
+| 13>  C        2.5336210000     0.0883260000    -0.0797580000 
+| 14>  C        3.3821600000     1.1375550000    -0.0796050000 
+| 15>  N        4.6871330000     0.6797730000    -0.0734560000 
+| 16>  C        4.5816030000    -0.6038820000    -0.0701600000 
+| 17>  C        5.6557450000    -1.6176310000    -0.0632640000 
+| 18>  O        3.3008810000    -1.0420500000    -0.0736550000 
+| 19>  H        0.5926570000     0.9101080000    -0.0893140000 
+| 20>  H        0.7217000000    -0.6156500000     0.7984050000 
+| 21>  H        0.7282630000    -0.6206780000    -0.9673450000 
+| 22>  H        3.1456090000     2.1899380000    -0.0834990000 
+| 23>  H        6.6178120000    -1.1095390000    -0.0610910000 
+| 24>  H        5.5929920000    -2.2615390000    -0.9439980000 
+| 25>  H        5.5863700000    -2.2565560000     0.8205960000 
+| 26> *
+| 27> 
+| 28>                          ****END OF INPUT****
+================================================================================
+
+                       ****************************
+                       * Single Point Calculation *
+                       ****************************
+
+--------------------------------
+INTERNAL COORDINATES (ANGSTROEM)
+--------------------------------
+ C      0   0   0   0.000000     0.000     0.000
+ C      1   0   0   1.475043     0.000     0.000
+ C      2   1   0   1.349407   135.171     0.000
+ N      3   2   1   1.382952   109.632   180.001
+ C      4   3   2   1.287990   104.631     0.000
+ C      5   4   3   1.476995   128.644   180.000
+ O      5   4   3   1.353607   113.586     0.000
+ H      1   2   3   1.090027   109.603     0.000
+ H      1   2   3   1.093536   111.422   240.143
+ H      1   2   3   1.093536   111.422   119.855
+ H      3   2   1   1.078648   128.368     0.000
+ H      6   5   4   1.087996   108.817     0.000
+ H      6   5   4   1.092816   111.032   239.886
+ H      6   5   4   1.092816   111.032   120.121
+
+---------------------------
+INTERNAL COORDINATES (A.U.)
+---------------------------
+ C      0   0   0   0.000000     0.000     0.000
+ C      1   0   0   2.787428     0.000     0.000
+ C      2   1   0   2.550010   135.171     0.000
+ N      3   2   1   2.613401   109.632   180.001
+ C      4   3   2   2.433948   104.631     0.000
+ C      5   4   3   2.791117   128.644   180.000
+ O      5   4   3   2.557947   113.586     0.000
+ H      1   2   3   2.059853   109.603     0.000
+ H      1   2   3   2.066483   111.422   240.143
+ H      1   2   3   2.066484   111.422   119.855
+ H      3   2   1   2.038349   128.368     0.000
+ H      6   5   4   2.056014   108.817     0.000
+ H      6   5   4   2.065124   111.032   239.886
+ H      6   5   4   2.065123   111.032   120.121
+
+
+
+           ************************************************************
+           *        Program running with 2 parallel MPI-processes     *
+           *              working on a common directory               *
+           ************************************************************
+------------------------------------------------------------------------------
+                           ORCA GTO INTEGRAL CALCULATION
+                           -- RI-GTO INTEGRALS CHOSEN --
+------------------------------------------------------------------------------
+
+                         BASIS SET STATISTICS AND STARTUP INFO
+
+Gaussian basis set:
+ # of primitive gaussian shells          ...  119
+ # of primitive gaussian functions       ...  217
+ # of contracted shells                  ...   63
+ # of contracted basis functions         ...  133
+ Highest angular momentum                ...    2
+ Maximum contraction depth               ...    5
+Auxiliary gaussian basis set:
+ # of primitive gaussian shells          ...  224
+ # of primitive gaussian functions       ...  602
+ # of contracted shells                  ...  140
+ # of contracted aux-basis functions     ...  420
+ Highest angular momentum                ...    4
+ Maximum contraction depth               ...    7
+Ratio of auxiliary to basis functions    ...  3.16
+Integral package used                  ... LIBINT
+ One Electron integrals                  ... done
+ Ordering auxiliary basis shells         ... done
+ Integral threshhold             Thresh  ...  1.000e-10
+ Primitive cut-off               TCut    ...  1.000e-11
+ Pre-screening matrix                    ... done
+ Shell pair data                         ... 
+ Ordering of the shell pairs             ... done (   0.000 sec) 1922 of 2016 pairs
+ Determination of significant pairs      ... done (   0.000 sec)
+ Creation of shell pair data             ... done (   0.000 sec)
+ Storage of shell pair data              ... done (   0.000 sec)
+ Shell pair data done in (   0.001 sec)
+ Computing two index integrals           ... done
+ Cholesky decomposition of the V-matrix  ... done
+
+
+Timings:
+ Total evaluation time                   ...   0.152 sec (  0.003 min)
+ One electron matrix time                ...   0.016 sec (  0.000 min) = 10.4%
+ Schwartz matrix evaluation time         ...   0.071 sec (  0.001 min) = 46.3%
+ Two index repulsion integral time       ...   0.007 sec (  0.000 min) =  4.8%
+ Cholesky decomposition of V             ...   0.003 sec (  0.000 min) =  2.0%
+ Three index repulsion integral time     ...   0.000 sec (  0.000 min) =  0.0%
+
+           ************************************************************
+           *              Shut down parallel processing               *
+           ************************************************************
+
+
+           ************************************************************
+           *        Program running with 2 parallel MPI-processes     *
+           *              working on a common directory               *
+           ************************************************************
+-------------------------------------------------------------------------------
+                                 ORCA SCF
+-------------------------------------------------------------------------------
+
+------------
+SCF SETTINGS
+------------
+Hamiltonian:
+ Density Functional     Method          .... DFT(GTOs)
+ Exchange Functional    Exchange        .... PBE
+   PBE kappa parameter  XKappa          ....  0.804000
+ Correlation Functional Correlation     .... PBE
+ LDA part of GGA corr.  LDAOpt          .... PW91-LDA
+ Gradients option       PostSCFGGA      .... off
+   NL short-range parameter             ....  6.400000
+ RI-approximation to the Coulomb term is turned on
+   Number of auxiliary basis functions  .... 420
+
+
+General Settings:
+ Integral files         IntName         .... 4712
+ Hartree-Fock type      HFTyp           .... RHF
+ Total Charge           Charge          ....    0
+ Multiplicity           Mult            ....    1
+ Number of Electrons    NEL             ....   52
+ Basis Dimension        Dim             ....  133
+ Nuclear Repulsion      ENuc            ....    295.3263193549 Eh
+
+Convergence Acceleration:
+ DIIS                   CNVDIIS         .... on
+   Start iteration      DIISMaxIt       ....    12
+   Startup error        DIISStart       ....  0.200000
+   # of expansion vecs  DIISMaxEq       ....     5
+   Bias factor          DIISBfac        ....   1.050
+   Max. coefficient     DIISMaxC        ....  10.000
+ Newton-Raphson         CNVNR           .... off
+ SOSCF                  CNVSOSCF        .... on
+   Start iteration      SOSCFMaxIt      ....   150
+   Startup grad/error   SOSCFStart      ....  0.003300
+ Level Shifting         CNVShift        .... on
+   Level shift para.    LevelShift      ....    0.2500
+   Turn off err/grad.   ShiftErr        ....    0.0010
+ Zerner damping         CNVZerner       .... off
+ Static damping         CNVDamp         .... on
+   Fraction old density DampFac         ....    0.7000
+   Max. Damping (<1)    DampMax         ....    0.9800
+   Min. Damping (>=0)   DampMin         ....    0.0000
+   Turn off err/grad.   DampErr         ....    0.1000
+ Fernandez-Rico         CNVRico         .... off
+
+SCF Procedure:
+ Maximum # iterations   MaxIter         ....   125
+ SCF integral mode      SCFMode         .... Direct
+   Integral package                     .... LIBINT
+ Reset frequeny         DirectResetFreq ....    20
+ Integral Threshold     Thresh          ....  1.000e-10 Eh
+ Primitive CutOff       TCut            ....  1.000e-11 Eh
+
+Convergence Tolerance:
+ Convergence Check Mode ConvCheckMode   .... Total+1el-Energy
+ Energy Change          TolE            ....  1.000e-06 Eh
+ 1-El. energy change                    ....  1.000e-03 Eh
+ Orbital Gradient       TolG            ....  5.000e-05
+ Orbital Rotation angle TolX            ....  5.000e-05
+ DIIS Error             TolErr          ....  1.000e-06
+
+
+Diagonalization of the overlap matrix:
+Smallest eigenvalue                        ... 1.437e-03
+Time for diagonalization                   ...    0.010 sec
+Threshold for overlap eigenvalues          ... 1.000e-08
+Number of eigenvalues below threshold      ... 0
+Time for construction of square roots      ...    0.003 sec
+Total time needed                          ...    0.013 sec
+
+-------------------
+DFT GRID GENERATION
+-------------------
+
+General Integration Accuracy     IntAcc      ...  4.340
+Radial Grid Type                 RadialGrid  ... Gauss-Chebyshev
+Angular Grid (max. acc.)         AngularGrid ... Lebedev-110
+Angular grid pruning method      GridPruning ... 3 (G Style)
+Weight generation scheme         WeightScheme... Becke
+Basis function cutoff            BFCut       ...    1.0000e-10
+Integration weight cutoff        WCut        ...    1.0000e-14
+Grids for H and He will be reduced by one unit
+
+# of grid points (after initial pruning)     ...  17256 (   0.0 sec)
+# of grid points (after weights+screening)   ...  16190 (   0.0 sec)
+nearest neighbour list constructed           ...    0.0 sec
+Grid point re-assignment to atoms done       ...    0.0 sec
+Grid point division into batches done        ...    0.0 sec
+Reduced shell lists constructed in    0.1 sec
+
+Total number of grid points                  ...    16190
+Total number of batches                      ...      258
+Average number of points per batch           ...       62
+Average number of grid points per atom       ...     1156
+Average number of shells per batch           ...    51.43 (81.64%)
+Average number of basis functions per batch  ...   109.66 (82.45%)
+Average number of large shells per batch     ...    42.39 (82.43%)
+Average number of large basis fcns per batch ...    89.82 (81.91%)
+Maximum spatial batch extension              ...  16.97, 15.68, 20.04 au
+Average spatial batch extension              ...   1.18,  1.21,  1.44 au
+
+Time for grid setup =    0.129 sec
+
+------------------------------
+INITIAL GUESS: MODEL POTENTIAL
+------------------------------
+Loading Hartree-Fock densities                     ... done
+Calculating cut-offs                               ... done
+Setting up the integral package                    ... done
+Initializing the effective Hamiltonian             ... done
+Starting the Coulomb interaction                   ... done (   0.0 sec)
+Reading the grid                                   ... done
+Mapping shells                                     ... done
+Starting the XC term evaluation                    ... done (   0.1 sec)
+  promolecular density results
+     # of electrons  =     51.993144919
+     EX              =    -42.357205643
+     EC              =     -1.727881434
+     EX+EC           =    -44.085087077
+Transforming the Hamiltonian                       ... done (   0.0 sec)
+Diagonalizing the Hamiltonian                      ... done (   0.0 sec)
+Back transforming the eigenvectors                 ... done (   0.0 sec)
+Now organizing SCF variables                       ... done
+                      ------------------
+                      INITIAL GUESS DONE (   0.3 sec)
+                      ------------------
+--------------
+SCF ITERATIONS
+--------------
+ITER       Energy         Delta-E        Max-DP      RMS-DP      [F,P]     Damp
+               ***  Starting incremental Fock matrix formation  ***
+  0   -323.9204910488   0.000000000000 0.08653939  0.00270389  0.1952692 0.7000
+  1   -324.0036764389  -0.083185390119 0.05348271  0.00179234  0.0764600 0.7000
+                               ***Turning on DIIS***
+  2   -324.0312505963  -0.027574157386 0.05475160  0.00270882  0.0277403 0.0000
+  3   -324.0738124797  -0.042561883439 0.04032790  0.00129856  0.0455816 0.0000
+  4   -324.0857946385  -0.011982158741 0.01370435  0.00046448  0.0191121 0.0000
+                      *** Initiating the SOSCF procedure ***
+                           *** Shutting down DIIS ***
+                      *** Re-Reading the Fockian *** 
+                      *** Removing any level shift *** 
+ITER      Energy       Delta-E        Grad      Rot      Max-DP    RMS-DP
+  5   -324.08709940  -0.0013047652  0.000744  0.000744  0.002565  0.000142
+               *** Restarting incremental Fock matrix formation ***
+  6   -324.08714598  -0.0000465745  0.000506  0.001807  0.003585  0.000101
+  7   -324.08712759   0.0000183929  0.001464  0.001759  0.002601  0.000055
+  8   -324.08715295  -0.0000253657  0.000355  0.001435  0.001346  0.000039
+  9   -324.08714974   0.0000032140  0.000687  0.000944  0.000937  0.000025
+ 10   -324.08715400  -0.0000042642  0.000040  0.000088  0.000222  0.000007
+ 11   -324.08715390   0.0000000966  0.000065  0.000053  0.000145  0.000004
+                 **** Energy Check signals convergence ****
+              ***Rediagonalizing the Fockian in SOSCF/NRSCF***
+
+               *****************************************************
+               *                     SUCCESS                       *
+               *           SCF CONVERGED AFTER  12 CYCLES          *
+               *****************************************************
+
+Setting up the final grid:
+
+General Integration Accuracy     IntAcc      ...  4.670
+Radial Grid Type                 RadialGrid  ... Gauss-Chebyshev
+Angular Grid (max. acc.)         AngularGrid ... Lebedev-302
+Angular grid pruning method      GridPruning ... 3 (G Style)
+Weight generation scheme         WeightScheme... Becke
+Basis function cutoff            BFCut       ...    1.0000e-10
+Integration weight cutoff        WCut        ...    1.0000e-14
+Grids for H and He will be reduced by one unit
+
+# of grid points (after initial pruning)     ...  67242 (   0.0 sec)
+# of grid points (after weights+screening)   ...  62276 (   0.1 sec)
+nearest neighbour list constructed           ...    0.0 sec
+Grid point re-assignment to atoms done       ...    0.0 sec
+Grid point division into batches done        ...    0.2 sec
+Reduced shell lists constructed in    0.4 sec
+
+Total number of grid points                  ...    62276
+Total number of batches                      ...      980
+Average number of points per batch           ...       63
+Average number of grid points per atom       ...     4448
+Average number of shells per batch           ...    48.25 (76.59%)
+Average number of basis functions per batch  ...   101.97 (76.67%)
+Average number of large shells per batch     ...    38.70 (80.22%)
+Average number of large basis fcns per batch ...    81.23 (79.66%)
+Maximum spatial batch extension              ...  15.59, 14.07, 17.08 au
+Average spatial batch extension              ...   0.82,  0.84,  0.94 au
+
+Final grid set up in    0.5 sec
+Final integration                            ... done (   0.3 sec)
+Change in XC energy                          ...    -0.000155321
+Integrated number of electrons               ...    51.999994209
+Previous integrated no of electrons          ...    52.000859866
+
+----------------
+TOTAL SCF ENERGY
+----------------
+
+Total Energy       :         -324.08730938 Eh           -8818.86403 eV
+
+Components:
+Nuclear Repulsion  :          295.32631935 Eh            8036.23770 eV
+Electronic Energy  :         -619.41362873 Eh          -16855.10173 eV
+
+One Electron Energy:        -1023.86144287 Eh          -27860.68627 eV
+Two Electron Energy:          404.44781414 Eh           11005.58454 eV
+
+Virial components:
+Potential Energy   :         -645.35837632 Eh          -17561.09421 eV
+Kinetic Energy     :          321.27106694 Eh            8742.23018 eV
+Virial Ratio       :            2.00876594
+
+
+DFT components:
+N(Alpha)           :       25.999997104686 electrons
+N(Beta)            :       25.999997104686 electrons
+N(Total)           :       51.999994209373 electrons
+E(X)               :      -43.095480914888 Eh       
+E(C)               :       -1.743671884541 Eh       
+E(XC)              :      -44.839152799429 Eh       
+
+---------------
+SCF CONVERGENCE
+---------------
+
+  Last Energy change         ...   -1.4971e-07  Tolerance :   1.0000e-06
+  Last MAX-Density change    ...    3.8465e-05  Tolerance :   1.0000e-05
+  Last RMS-Density change    ...    1.1827e-06  Tolerance :   1.0000e-06
+  Last Orbital Gradient      ...    8.4766e-06  Tolerance :   5.0000e-05
+  Last Orbital Rotation      ...    3.3971e-05  Tolerance :   5.0000e-05
+
+             **** THE GBW FILE WAS UPDATED (4712.gbw) ****
+             **** DENSITY FILE WAS UPDATED (4712.scfp.tmp) ****
+             **** ENERGY FILE WAS UPDATED (4712.en.tmp) ****
+
+                    ********************************
+                    * MULLIKEN POPULATION ANALYSIS *
+                    ********************************
+
+-----------------------
+MULLIKEN ATOMIC CHARGES
+-----------------------
+   0 C :    0.092582
+   1 C :   -0.019852
+   2 C :   -0.036736
+   3 N :   -0.103108
+   4 C :   -0.068572
+   5 C :    0.090969
+   6 O :   -0.181234
+   7 H :    0.026221
+   8 H :    0.042724
+   9 H :    0.042728
+  10 H :   -0.009651
+  11 H :    0.038869
+  12 H :    0.042599
+  13 H :    0.042460
+Sum of atomic charges:   -0.0000000
+
+--------------------------------
+MULLIKEN REDUCED ORBITAL CHARGES
+--------------------------------
+  0 C s       :     2.888037  s :     2.888037
+      pz      :     1.024239  p :     2.994182
+      px      :     0.973001
+      py      :     0.996943
+      dz2     :     0.004645  d :     0.025198
+      dxz     :     0.005877
+      dyz     :     0.004775
+      dx2y2   :     0.005858
+      dxy     :     0.004043
+  1 C s       :     3.109431  s :     3.109431
+      pz      :     1.077722  p :     2.840816
+      px      :     0.937244
+      py      :     0.825850
+      dz2     :     0.005293  d :     0.069606
+      dxz     :     0.009495
+      dyz     :     0.011453
+      dx2y2   :     0.017821
+      dxy     :     0.025544
+  2 C s       :     3.201499  s :     3.201499
+      pz      :     1.076027  p :     2.786853
+      px      :     0.861357
+      py      :     0.849470
+      dz2     :     0.003528  d :     0.048383
+      dxz     :     0.009014
+      dyz     :     0.004256
+      dx2y2   :     0.014003
+      dxy     :     0.017582
+  3 N s       :     3.493513  s :     3.493513
+      pz      :     1.161781  p :     3.578882
+      px      :     1.303612
+      py      :     1.113490
+      dz2     :     0.003197  d :     0.030713
+      dxz     :     0.004461
+      dyz     :     0.006043
+      dx2y2   :     0.011163
+      dxy     :     0.005848
+  4 C s       :     3.110437  s :     3.110437
+      pz      :     1.019205  p :     2.863534
+      px      :     0.855651
+      py      :     0.988678
+      dz2     :     0.006005  d :     0.094601
+      dxz     :     0.011749
+      dyz     :     0.015053
+      dx2y2   :     0.028853
+      dxy     :     0.032940
+  5 C s       :     2.880797  s :     2.880797
+      pz      :     1.018297  p :     3.004394
+      px      :     0.994442
+      py      :     0.991655
+      dz2     :     0.004539  d :     0.023839
+      dxz     :     0.001888
+      dyz     :     0.008034
+      dx2y2   :     0.002599
+      dxy     :     0.006780
+  6 O s       :     3.735850  s :     3.735850
+      pz      :     1.639469  p :     4.425773
+      px      :     1.245913
+      py      :     1.540391
+      dz2     :     0.002206  d :     0.019611
+      dxz     :     0.003561
+      dyz     :     0.002977
+      dx2y2   :     0.004993
+      dxy     :     0.005874
+  7 H s       :     0.949653  s :     0.949653
+      pz      :     0.005553  p :     0.024125
+      px      :     0.006268
+      py      :     0.012305
+  8 H s       :     0.933018  s :     0.933018
+      pz      :     0.011085  p :     0.024258
+      px      :     0.005453
+      py      :     0.007720
+  9 H s       :     0.933012  s :     0.933012
+      pz      :     0.011082  p :     0.024260
+      px      :     0.005420
+      py      :     0.007757
+ 10 H s       :     0.986707  s :     0.986707
+      pz      :     0.005676  p :     0.022943
+      px      :     0.002937
+      py      :     0.014330
+ 11 H s       :     0.937120  s :     0.937120
+      pz      :     0.005349  p :     0.024011
+      px      :     0.011727
+      py      :     0.006936
+ 12 H s       :     0.932946  s :     0.932946
+      pz      :     0.011091  p :     0.024454
+      px      :     0.005106
+      py      :     0.008257
+ 13 H s       :     0.933090  s :     0.933090
+      pz      :     0.011134  p :     0.024450
+      px      :     0.005106
+      py      :     0.008210
+
+
+                     *******************************
+                     * LOEWDIN POPULATION ANALYSIS *
+                     *******************************
+
+----------------------
+LOEWDIN ATOMIC CHARGES
+----------------------
+   0 C :   -0.063617
+   1 C :   -0.011426
+   2 C :   -0.062957
+   3 N :   -0.105535
+   4 C :    0.005885
+   5 C :   -0.067248
+   6 O :    0.011880
+   7 H :    0.045405
+   8 H :    0.043387
+   9 H :    0.043388
+  10 H :    0.021161
+  11 H :    0.049482
+  12 H :    0.045102
+  13 H :    0.045092
+
+-------------------------------
+LOEWDIN REDUCED ORBITAL CHARGES
+-------------------------------
+  0 C s       :     2.825193  s :     2.825193
+      pz      :     1.072751  p :     3.166517
+      px      :     1.024697
+      py      :     1.069069
+      dz2     :     0.013593  d :     0.071908
+      dxz     :     0.014447
+      dyz     :     0.013751
+      dx2y2   :     0.018091
+      dxy     :     0.012027
+  1 C s       :     2.863958  s :     2.863958
+      pz      :     1.047309  p :     2.985609
+      px      :     1.005225
+      py      :     0.933076
+      dz2     :     0.011525  d :     0.161858
+      dxz     :     0.016050
+      dyz     :     0.024277
+      dx2y2   :     0.044550
+      dxy     :     0.065456
+  2 C s       :     2.865346  s :     2.865346
+      pz      :     1.057292  p :     3.076066
+      px      :     0.976385
+      py      :     1.042388
+      dz2     :     0.008278  d :     0.121545
+      dxz     :     0.018487
+      dyz     :     0.007018
+      dx2y2   :     0.040339
+      dxy     :     0.047423
+  3 N s       :     3.240364  s :     3.240364
+      pz      :     1.161436  p :     3.801217
+      px      :     1.381055
+      py      :     1.258726
+      dz2     :     0.006689  d :     0.063954
+      dxz     :     0.006480
+      dyz     :     0.010805
+      dx2y2   :     0.027360
+      dxy     :     0.012621
+  4 C s       :     2.845780  s :     2.845780
+      pz      :     0.993885  p :     2.937412
+      px      :     0.894947
+      py      :     1.048580
+      dz2     :     0.013726  d :     0.210923
+      dxz     :     0.021842
+      dyz     :     0.027256
+      dx2y2   :     0.071021
+      dxy     :     0.077079
+  5 C s       :     2.827971  s :     2.827971
+      pz      :     1.069998  p :     3.169766
+      px      :     1.050384
+      py      :     1.049385
+      dz2     :     0.013530  d :     0.069511
+      dxz     :     0.003768
+      dyz     :     0.022901
+      dx2y2   :     0.008199
+      dxy     :     0.021115
+  6 O s       :     3.443734  s :     3.443734
+      pz      :     1.618552  p :     4.506294
+      px      :     1.307663
+      py      :     1.580079
+      dz2     :     0.004178  d :     0.038091
+      dxz     :     0.006970
+      dyz     :     0.003507
+      dx2y2   :     0.010579
+      dxy     :     0.012857
+  7 H s       :     0.887961  s :     0.887961
+      pz      :     0.013267  p :     0.066634
+      px      :     0.017945
+      py      :     0.035422
+  8 H s       :     0.889508  s :     0.889508
+      pz      :     0.031463  p :     0.067105
+      px      :     0.015845
+      py      :     0.019797
+  9 H s       :     0.889506  s :     0.889506
+      pz      :     0.031442  p :     0.067106
+      px      :     0.015738
+      py      :     0.019926
+ 10 H s       :     0.908004  s :     0.908004
+      pz      :     0.017258  p :     0.070834
+      px      :     0.011144
+      py      :     0.042432
+ 11 H s       :     0.882769  s :     0.882769
+      pz      :     0.013070  p :     0.067749
+      px      :     0.035519
+      py      :     0.019160
+ 12 H s       :     0.887433  s :     0.887433
+      pz      :     0.031316  p :     0.067465
+      px      :     0.013290
+      py      :     0.022859
+ 13 H s       :     0.887447  s :     0.887447
+      pz      :     0.031447  p :     0.067460
+      px      :     0.013306
+      py      :     0.022707
+
+
+                      *****************************
+                      * MAYER POPULATION ANALYSIS *
+                      *****************************
+
+  NA   - Mulliken gross atomic population
+  ZA   - Total nuclear charge
+  QA   - Mulliken gross atomic charge
+  VA   - Mayer's total valence
+  BVA  - Mayer's bonded valence
+  FA   - Mayer's free valence
+
+  ATOM       NA         ZA         QA         VA         BVA        FA
+  0 C      5.9074     6.0000     0.0926     3.9243     3.9243    -0.0000
+  1 C      6.0199     6.0000    -0.0199     4.0190     4.0190    -0.0000
+  2 C      6.0367     6.0000    -0.0367     3.9850     3.9850    -0.0000
+  3 N      7.1031     7.0000    -0.1031     3.1552     3.1552     0.0000
+  4 C      6.0686     6.0000    -0.0686     4.2773     4.2773    -0.0000
+  5 C      5.9090     6.0000     0.0910     3.9210     3.9210    -0.0000
+  6 O      8.1812     8.0000    -0.1812     2.3706     2.3706    -0.0000
+  7 H      0.9738     1.0000     0.0262     0.9984     0.9984     0.0000
+  8 H      0.9573     1.0000     0.0427     0.9924     0.9924     0.0000
+  9 H      0.9573     1.0000     0.0427     0.9924     0.9924     0.0000
+ 10 H      1.0097     1.0000    -0.0097     0.9986     0.9986    -0.0000
+ 11 H      0.9611     1.0000     0.0389     1.0154     1.0154     0.0000
+ 12 H      0.9574     1.0000     0.0426     0.9958     0.9958    -0.0000
+ 13 H      0.9575     1.0000     0.0425     0.9958     0.9958    -0.0000
+
+  Mayer bond orders larger than 0.1
+B(  0-C ,  1-C ) :   1.1170 B(  0-C ,  7-H ) :   0.9434 B(  0-C ,  8-H ) :   0.9355 
+B(  0-C ,  9-H ) :   0.9354 B(  1-C ,  2-C ) :   1.5873 B(  1-C ,  6-O ) :   1.1079 
+B(  2-C ,  3-N ) :   1.2986 B(  2-C , 10-H ) :   0.9903 B(  3-N ,  4-C ) :   1.7589 
+B(  4-C ,  5-C ) :   1.1129 B(  4-C ,  6-O ) :   1.1560 B(  5-C , 11-H ) :   0.9413 
+B(  5-C , 12-H ) :   0.9369 B(  5-C , 13-H ) :   0.9368 
+
+
+ *********************************** NBO 6.0 ***********************************
+             N A T U R A L   A T O M I C   O R B I T A L   A N D
+          N A T U R A L   B O N D   O R B I T A L   A N A L Y S I S
+ ***************************** Kiya KiyaLu (100703) ****************************
+  (c) Copyright 1996-2015 Board of Regents of the University of Wisconsin System
+      on behalf of the Theoretical Chemistry Institute.  All rights reserved.
+
+          Cite this program as:
+
+          NBO 6.0.  E. D. Glendening, J. K. Badenhoop, A. E. Reed,
+          J. E. Carpenter, J. A. Bohmann, C. M. Morales, C. R. Landis,
+          and F. Weinhold (Theoretical Chemistry Institute, University
+          of Wisconsin, Madison, WI, 2013); http://nbo6.chem.wisc.edu/
+
+       /NPA    / : Natural Population Analysis
+       /NBO    / : Natural Bond Orbital Analysis
+       /AONBO  / : Write the AO to NBO transformation to lfn77
+       /FILE   / : Set to 4712
+
+ Filename set to 4712
+
+ Job title:  *** NBO job generated by orca_scf
+
+ Warning: MOs are non-orthogonal; program will continue
+
+ Warning: -2870.42657 electrons reside outside the linearly independent MO space
+
+
+ NATURAL POPULATIONS:  Natural atomic orbital occupancies
+
+  NAO Atom No lang   Type(AO)    Occupancy      Energy
+ -------------------------------------------------------
+   1    C  1  s      Cor( 1s)     1.99915      -9.79119
+   2    C  1  s      Val( 2s)     1.08957      -0.22790
+   3    C  1  s      Ryd( 3s)     0.00025       0.83965
+   4    C  1  px     Val( 2p)     1.10744      -0.08368
+   5    C  1  px     Ryd( 3p)     0.00084       0.43395
+   6    C  1  py     Val( 2p)     1.24691      -0.08383
+   7    C  1  py     Ryd( 3p)     0.00270       0.55929
+   8    C  1  pz     Val( 2p)     1.24004      -0.08431
+   9    C  1  pz     Ryd( 3p)     0.00131       0.53987
+  10    C  1  dxy    Ryd( 3d)     0.00029       2.20046
+  11    C  1  dxz    Ryd( 3d)     0.00052       2.05714
+  12    C  1  dyz    Ryd( 3d)     0.00049       2.25327
+  13    C  1  dx2y2  Ryd( 3d)     0.00057       2.22619
+  14    C  1  dz2    Ryd( 3d)     0.00047       2.23422
+
+  15    C  2  s      Cor( 1s)     1.99876      -9.83031
+  16    C  2  s      Val( 2s)     0.84076      -0.13243
+  17    C  2  s      Ryd( 3s)     0.00273       0.50969
+  18    C  2  px     Val( 2p)     0.98891      -0.05849
+  19    C  2  px     Ryd( 3p)     0.00377       0.93068
+  20    C  2  py     Val( 2p)     0.82494      -0.04185
+  21    C  2  py     Ryd( 3p)     0.00716       0.64766
+  22    C  2  pz     Val( 2p)     1.06420      -0.12174
+  23    C  2  pz     Ryd( 3p)     0.00240       0.54828
+  24    C  2  dxy    Ryd( 3d)     0.00198       2.38181
+  25    C  2  dxz    Ryd( 3d)     0.00113       1.85019
+  26    C  2  dyz    Ryd( 3d)     0.00125       1.82948
+  27    C  2  dx2y2  Ryd( 3d)     0.00159       2.26883
+  28    C  2  dz2    Ryd( 3d)     0.00079       2.10226
+
+  29    C  3  s      Cor( 1s)     1.99885      -9.78598
+  30    C  3  s      Val( 2s)     0.92706      -0.12967
+  31    C  3  s      Ryd( 3s)     0.00192       0.47236
+  32    C  3  px     Val( 2p)     0.89991      -0.02431
+  33    C  3  px     Ryd( 3p)     0.00743       0.53534
+  34    C  3  py     Val( 2p)     1.18290      -0.04574
+  35    C  3  py     Ryd( 3p)     0.00501       0.83042
+  36    C  3  pz     Val( 2p)     1.07271      -0.11045
+  37    C  3  pz     Ryd( 3p)     0.00158       0.49435
+  38    C  3  dxy    Ryd( 3d)     0.00153       2.35932
+  39    C  3  dxz    Ryd( 3d)     0.00098       1.85565
+  40    C  3  dyz    Ryd( 3d)     0.00075       1.86794
+  41    C  3  dx2y2  Ryd( 3d)     0.00127       2.40043
+  42    C  3  dz2    Ryd( 3d)     0.00072       2.14954
+
+  43    N  4  s      Cor( 1s)     1.99928     -13.79466
+  44    N  4  s      Val( 2s)     1.39061      -0.45374
+  45    N  4  s      Ryd( 3s)     0.00087       1.17053
+  46    N  4  px     Val( 2p)     1.50858      -0.16473
+  47    N  4  px     Ryd( 3p)     0.00374       0.96112
+  48    N  4  py     Val( 2p)     1.38222      -0.16751
+  49    N  4  py     Ryd( 3p)     0.00338       1.00696
+  50    N  4  pz     Val( 2p)     1.21596      -0.15961
+  51    N  4  pz     Ryd( 3p)     0.00040       0.82720
+  52    N  4  dxy    Ryd( 3d)     0.00215       2.47982
+  53    N  4  dxz    Ryd( 3d)     0.00143       2.19063
+  54    N  4  dyz    Ryd( 3d)     0.00141       2.24272
+  55    N  4  dx2y2  Ryd( 3d)     0.00236       2.78088
+  56    N  4  dz2    Ryd( 3d)     0.00142       2.48896
+
+  57    C  5  s      Cor( 1s)     1.99908      -9.85508
+  58    C  5  s      Val( 2s)     0.77440      -0.12105
+  59    C  5  s      Ryd( 3s)     0.00341       0.45128
+  60    C  5  px     Val( 2p)     0.76773      -0.03541
+  61    C  5  px     Ryd( 3p)     0.00927       0.76169
+  62    C  5  py     Val( 2p)     0.90104      -0.01892
+  63    C  5  py     Ryd( 3p)     0.01096       0.68397
+  64    C  5  pz     Val( 2p)     0.98007      -0.12962
+  65    C  5  pz     Ryd( 3p)     0.00322       0.51981
+  66    C  5  dxy    Ryd( 3d)     0.00317       2.32708
+  67    C  5  dxz    Ryd( 3d)     0.00140       1.81444
+  68    C  5  dyz    Ryd( 3d)     0.00184       1.91235
+  69    C  5  dx2y2  Ryd( 3d)     0.00228       2.34912
+  70    C  5  dz2    Ryd( 3d)     0.00081       2.08722
+
+  71    C  6  s      Cor( 1s)     1.99916      -9.78721
+  72    C  6  s      Val( 2s)     1.09736      -0.22922
+  73    C  6  s      Ryd( 3s)     0.00035       0.83274
+  74    C  6  px     Val( 2p)     1.17674      -0.08420
+  75    C  6  px     Ryd( 3p)     0.00149       0.48687
+  76    C  6  py     Val( 2p)     1.18625      -0.08131
+  77    C  6  py     Ryd( 3p)     0.00144       0.49806
+  78    C  6  pz     Val( 2p)     1.23631      -0.08142
+  79    C  6  pz     Ryd( 3p)     0.00125       0.54381
+  80    C  6  dxy    Ryd( 3d)     0.00068       2.28003
+  81    C  6  dxz    Ryd( 3d)     0.00024       1.95731
+  82    C  6  dyz    Ryd( 3d)     0.00073       2.34094
+  83    C  6  dx2y2  Ryd( 3d)     0.00017       2.13384
+  84    C  6  dz2    Ryd( 3d)     0.00046       2.23511
+
+  85    O  7  s      Cor( 1s)     1.99963     -18.60211
+  86    O  7  s      Val( 2s)     1.59240      -0.81468
+  87    O  7  s      Ryd( 3s)     0.00075       1.49356
+  88    O  7  px     Val( 2p)     1.46226      -0.31828
+  89    O  7  px     Ryd( 3p)     0.00107       1.36078
+  90    O  7  py     Val( 2p)     1.72880      -0.32719
+  91    O  7  py     Ryd( 3p)     0.00193       1.12143
+  92    O  7  pz     Val( 2p)     1.68100      -0.29368
+  93    O  7  pz     Ryd( 3p)     0.00045       1.00234
+  94    O  7  dxy    Ryd( 3d)     0.00160       3.01107
+  95    O  7  dxz    Ryd( 3d)     0.00057       2.59297
+  96    O  7  dyz    Ryd( 3d)     0.00137       2.56989
+  97    O  7  dx2y2  Ryd( 3d)     0.00149       2.90337
+  98    O  7  dz2    Ryd( 3d)     0.00088       2.81343
+
+  99    H  8  s      Val( 1s)     0.75387       0.05542
+ 100    H  8  s      Ryd( 2s)     0.00104       0.32652
+ 101    H  8  px     Ryd( 2p)     0.00029       1.79755
+ 102    H  8  py     Ryd( 2p)     0.00066       2.17815
+ 103    H  8  pz     Ryd( 2p)     0.00015       1.68677
+
+ 104    H  9  s      Val( 1s)     0.75648       0.05525
+ 105    H  9  s      Ryd( 2s)     0.00225       0.32073
+ 106    H  9  px     Ryd( 2p)     0.00021       1.73342
+ 107    H  9  py     Ryd( 2p)     0.00031       1.86958
+ 108    H  9  pz     Ryd( 2p)     0.00057       2.09444
+
+ 109    H 10  s      Val( 1s)     0.75648       0.05525
+ 110    H 10  s      Ryd( 2s)     0.00225       0.32071
+ 111    H 10  px     Ryd( 2p)     0.00021       1.73103
+ 112    H 10  py     Ryd( 2p)     0.00031       1.87217
+ 113    H 10  pz     Ryd( 2p)     0.00057       2.09428
+
+ 114    H 11  s      Val( 1s)     0.77507       0.07195
+ 115    H 11  s      Ryd( 2s)     0.00085       0.30259
+ 116    H 11  px     Ryd( 2p)     0.00007       1.88886
+ 117    H 11  py     Ryd( 2p)     0.00093       2.33376
+ 118    H 11  pz     Ryd( 2p)     0.00023       1.60948
+
+ 119    H 12  s      Val( 1s)     0.74339       0.06860
+ 120    H 12  s      Ryd( 2s)     0.00182       0.33149
+ 121    H 12  px     Ryd( 2p)     0.00067       2.18000
+ 122    H 12  py     Ryd( 2p)     0.00029       1.82890
+ 123    H 12  pz     Ryd( 2p)     0.00013       1.69324
+
+ 124    H 13  s      Val( 1s)     0.75608       0.05597
+ 125    H 13  s      Ryd( 2s)     0.00185       0.32442
+ 126    H 13  px     Ryd( 2p)     0.00016       1.67294
+ 127    H 13  py     Ryd( 2p)     0.00038       1.93980
+ 128    H 13  pz     Ryd( 2p)     0.00056       2.10330
+
+ 129    H 14  s      Val( 1s)     0.75607       0.05597
+ 130    H 14  s      Ryd( 2s)     0.00185       0.32432
+ 131    H 14  px     Ryd( 2p)     0.00016       1.67312
+ 132    H 14  py     Ryd( 2p)     0.00037       1.93661
+ 133    H 14  pz     Ryd( 2p)     0.00057       2.10597
+
+   1 low occupancy (<1.9990e) core orbital  found on  C  2
+   1 low occupancy (<1.9990e) core orbital  found on  C  3
+
+
+ Summary of Natural Population Analysis:
+
+                                     Natural Population
+             Natural    ---------------------------------------------
+  Atom No    Charge        Core      Valence    Rydberg      Total
+ --------------------------------------------------------------------
+    C  1   -0.69055      1.99915     4.68395    0.00745     6.69055
+    C  2    0.25965      1.99876     3.71880    0.02279     5.74035
+    C  3   -0.10262      1.99885     4.08258    0.02119     6.10262
+    N  4   -0.51383      1.99928     5.49737    0.01718     7.51383
+    C  5    0.54132      1.99908     3.42324    0.03636     5.45868
+    C  6   -0.70262      1.99916     4.69666    0.00681     6.70262
+    O  7   -0.47417      1.99963     6.46445    0.01009     8.47417
+    H  8    0.24399      0.00000     0.75387    0.00214     0.75601
+    H  9    0.24018      0.00000     0.75648    0.00334     0.75982
+    H 10    0.24017      0.00000     0.75648    0.00335     0.75983
+    H 11    0.22284      0.00000     0.77507    0.00209     0.77716
+    H 12    0.25370      0.00000     0.74339    0.00291     0.74630
+    H 13    0.24096      0.00000     0.75608    0.00296     0.75904
+    H 14    0.24097      0.00000     0.75607    0.00296     0.75903
+ ====================================================================
+ * Total *  0.00000     13.99390    37.86451    0.14160    52.00000
+
+                                 Natural Population
+ ---------------------------------------------------------
+   Core                      13.99390 ( 99.9564% of   14)
+   Valence                   37.86451 ( 99.6434% of   38)
+   Natural Minimal Basis     51.85840 ( 99.7277% of   52)
+   Natural Rydberg Basis      0.14160 (  0.2723% of   52)
+ ---------------------------------------------------------
+
+    Atom No         Natural Electron Configuration
+ ----------------------------------------------------------------------------
+      C  1      [core]2s( 1.09)2p( 3.59)
+      C  2      [core]2s( 0.84)2p( 2.88)3p( 0.01)3d( 0.01)
+      C  3      [core]2s( 0.93)2p( 3.16)3p( 0.01)3d( 0.01)
+      N  4      [core]2s( 1.39)2p( 4.11)3p( 0.01)3d( 0.01)
+      C  5      [core]2s( 0.77)2p( 2.65)3p( 0.02)3d( 0.01)
+      C  6      [core]2s( 1.10)2p( 3.60)
+      O  7      [core]2s( 1.59)2p( 4.87)3d( 0.01)
+      H  8            1s( 0.75)
+      H  9            1s( 0.76)
+      H 10            1s( 0.76)
+      H 11            1s( 0.78)
+      H 12            1s( 0.74)
+      H 13            1s( 0.76)
+      H 14            1s( 0.76)
+
+
+ NATURAL BOND ORBITAL ANALYSIS:
+
+                            Occupancies       Lewis Structure    Low   High
+         Max    Occ     -------------------  -----------------   occ   occ
+  Cycle  Ctr   Thresh    Lewis   non-Lewis     CR  BD  nC  LP    (L)   (NL)
+ ============================================================================
+    1     2     1.90    49.79341   2.20659      7  15   0   4     2      2
+    2     2     1.89    49.79341   2.20659      7  15   0   4     2      2
+    3     2     1.88    50.42907   1.57093      7  16   0   3     1      2
+    4     2     1.87    51.01441   0.98559      7  16   0   3     1      2
+    5     2     1.79    51.01441   0.98559      7  16   0   3     1      2
+    6     2     1.75    51.01441   0.98559      7  16   0   3     1      2
+    7     2     1.68    51.01441   0.98559      7  16   0   3     0      2
+    8     2     1.64    51.01441   0.98559      7  16   0   3     0      2
+    9     2     1.87    51.01441   0.98559      7  16   0   3     1      2
+ ----------------------------------------------------------------------------
+
+ Strongly delocalized structure accepted
+
+ -------------------------------------------------------
+   Core                     13.99390 ( 99.956% of  14)
+   Valence Lewis            37.02051 ( 97.422% of  38)
+  ==================      =============================
+   Total Lewis              51.01441 ( 98.105% of  52)
+  -----------------------------------------------------
+   Valence non-Lewis         0.89157 (  1.715% of  52)
+   Rydberg non-Lewis         0.09402 (  0.181% of  52)
+  ==================      =============================
+   Total non-Lewis           0.98559 (  1.895% of  52)
+ -------------------------------------------------------
+
+
+     (Occupancy)   Bond orbital / Coefficients / Hybrids
+ ------------------ Lewis ------------------------------------------------------
+   1. (1.99915) CR ( 1) C  1            s(100.00%)
+                                         1.0000  0.0000  0.0000  0.0000  0.0000
+                                         0.0000  0.0000  0.0000  0.0000  0.0000
+                                         0.0000  0.0000  0.0000  0.0000
+   2. (1.99876) CR ( 1) C  2            s(100.00%)
+                                         1.0000  0.0000  0.0000  0.0000  0.0000
+                                         0.0000  0.0000  0.0000  0.0000  0.0000
+                                         0.0000  0.0000  0.0000  0.0000
+   3. (1.99885) CR ( 1) C  3            s(100.00%)
+                                         1.0000  0.0000  0.0000  0.0000  0.0000
+                                         0.0000  0.0000  0.0000  0.0000  0.0000
+                                         0.0000  0.0000  0.0000  0.0000
+   4. (1.99928) CR ( 1) N  4            s(100.00%)
+                                         1.0000  0.0000  0.0000  0.0000  0.0000
+                                         0.0000  0.0000  0.0000  0.0000  0.0000
+                                         0.0000  0.0000  0.0000  0.0000
+   5. (1.99908) CR ( 1) C  5            s(100.00%)
+                                         1.0000  0.0000  0.0000  0.0000  0.0000
+                                         0.0000  0.0000  0.0000  0.0000  0.0000
+                                         0.0000  0.0000  0.0000  0.0000
+   6. (1.99916) CR ( 1) C  6            s(100.00%)
+                                         1.0000  0.0000  0.0000  0.0000  0.0000
+                                         0.0000  0.0000  0.0000  0.0000  0.0000
+                                         0.0000  0.0000  0.0000  0.0000
+   7. (1.99963) CR ( 1) O  7            s(100.00%)
+                                         1.0000  0.0000  0.0000  0.0000  0.0000
+                                         0.0000  0.0000  0.0000  0.0000  0.0000
+                                         0.0000  0.0000  0.0000  0.0000
+   8. (1.90807) LP ( 1) N  4            s( 31.14%)p 2.21( 68.74%)d 0.00(  0.12%)
+                                         0.0000  0.5579 -0.0137  0.6729  0.0242
+                                         0.4836  0.0108  0.0011  0.0001 -0.0294
+                                         0.0000 -0.0001 -0.0091  0.0157
+   9. (1.96758) LP ( 1) O  7            s( 34.40%)p 1.91( 65.54%)d 0.00(  0.05%)
+                                         0.0000  0.5865  0.0000 -0.2622  0.0020
+                                        -0.7659  0.0084  0.0012  0.0000 -0.0131
+                                         0.0000  0.0000  0.0165  0.0098
+  10. (1.68243) LP ( 2) O  7            s(  0.00%)p 1.00( 99.92%)d 0.00(  0.08%)
+                                         0.0000  0.0000  0.0000 -0.0038  0.0000
+                                         0.0029  0.0000  0.9996  0.0039 -0.0001
+                                         0.0104  0.0269 -0.0001 -0.0001
+  11. (1.98408) BD ( 1) C  1- C  2
+               ( 49.81%)   0.7058* C  1 s( 30.29%)p 2.30( 69.67%)d 0.00(  0.04%)
+                                         0.0000  0.5503  0.0052  0.8306  0.0046
+                                         0.0820 -0.0025  0.0029  0.0000  0.0028
+                                         0.0001  0.0000  0.0175 -0.0103
+               ( 50.19%)   0.7085* C  2 s( 37.90%)p 1.64( 62.07%)d 0.00(  0.03%)
+                                         0.0000  0.6156  0.0090 -0.7830  0.0077
+                                        -0.0862 -0.0106 -0.0027  0.0000  0.0078
+                                         0.0001  0.0000  0.0122 -0.0098
+  12. (1.97746) BD ( 1) C  1- H  8
+               ( 61.99%)   0.7873* C  1 s( 23.12%)p 3.32( 76.85%)d 0.00(  0.03%)
+                                         0.0000  0.4808 -0.0018 -0.3956 -0.0114
+                                         0.7822 -0.0075 -0.0037  0.0000 -0.0095
+                                         0.0000 -0.0001 -0.0121 -0.0096
+               ( 38.01%)   0.6165* H  8 s( 99.90%)p 0.00(  0.10%)
+                                         0.9995 -0.0001  0.0153 -0.0273  0.0001
+  13. (1.97457) BD ( 1) C  1- H  9
+               ( 62.05%)   0.7877* C  1 s( 23.29%)p 3.29( 76.68%)d 0.00(  0.03%)
+                                         0.0000  0.4826 -0.0012 -0.2790 -0.0099
+                                        -0.4344  0.0034  0.7071 -0.0056  0.0033
+                                        -0.0057 -0.0137 -0.0029  0.0098
+               ( 37.95%)   0.6160* H  9 s( 99.91%)p 0.00(  0.09%)
+                                         0.9995 -0.0032  0.0107  0.0147 -0.0248
+  14. (1.97457) BD ( 1) C  1- H 10
+               ( 62.05%)   0.7877* C  1 s( 23.29%)p 3.29( 76.68%)d 0.00(  0.03%)
+                                         0.0000  0.4826 -0.0011 -0.2738 -0.0099
+                                        -0.4385  0.0035 -0.7067  0.0055  0.0033
+                                         0.0055  0.0138 -0.0030  0.0098
+               ( 37.95%)   0.6160* H 10 s( 99.91%)p 0.00(  0.09%)
+                                         0.9995 -0.0032  0.0106  0.0148  0.0247
+  15. (1.98603) BD ( 1) C  2- C  3
+               ( 50.91%)   0.7135* C  2 s( 39.99%)p 1.50( 59.96%)d 0.00(  0.05%)
+                                         0.0000  0.6324 -0.0052  0.4258 -0.0246
+                                         0.6460  0.0199 -0.0003 -0.0001  0.0177
+                                         0.0000  0.0000  0.0014 -0.0128
+               ( 49.09%)   0.7007* C  3 s( 38.18%)p 1.62( 61.75%)d 0.00(  0.07%)
+                                         0.0000  0.6179  0.0067 -0.5505 -0.0308
+                                        -0.5594  0.0229 -0.0005 -0.0002  0.0200
+                                         0.0000  0.0000 -0.0077 -0.0162
+  16. (1.87179) BD ( 2) C  2- C  3
+               ( 49.71%)   0.7051* C  2 s(  0.00%)p 1.00( 99.94%)d 0.00(  0.06%)
+                                         0.0000  0.0000  0.0000  0.0037  0.0001
+                                        -0.0029  0.0000 -0.9995  0.0183  0.0000
+                                        -0.0205 -0.0141  0.0001 -0.0001
+               ( 50.29%)   0.7091* C  3 s(  0.00%)p 1.00( 99.92%)d 0.00(  0.08%)
+                                         0.0000  0.0000  0.0000  0.0037 -0.0001
+                                        -0.0029  0.0000 -0.9994  0.0225 -0.0001
+                                         0.0099  0.0258 -0.0001 -0.0001
+  17. (1.98402) BD ( 1) C  2- O  7
+               ( 30.11%)   0.5488* C  2 s( 21.97%)p 3.54( 77.77%)d 0.01(  0.26%)
+                                         0.0000  0.4687  0.0023  0.4520 -0.0139
+                                        -0.7550 -0.0568  0.0038  0.0001 -0.0396
+                                         0.0002 -0.0003 -0.0142 -0.0289
+               ( 69.89%)   0.8360* O  7 s( 32.38%)p 2.09( 67.53%)d 0.00(  0.09%)
+                                         0.0000  0.5691  0.0017 -0.5392 -0.0137
+                                         0.6199 -0.0093 -0.0038  0.0000 -0.0170
+                                         0.0001 -0.0002 -0.0178 -0.0156
+  18. (1.96700) BD ( 1) C  3- N  4
+               ( 40.26%)   0.6345* C  3 s( 28.72%)p 2.48( 71.17%)d 0.00(  0.12%)
+                                         0.0000  0.5358  0.0117  0.8142  0.0467
+                                        -0.2101  0.0496  0.0036  0.0000 -0.0194
+                                         0.0003 -0.0001  0.0177 -0.0219
+               ( 59.74%)   0.7729* N  4 s( 30.57%)p 2.27( 69.31%)d 0.00(  0.13%)
+                                         0.0000  0.5528  0.0073 -0.7356 -0.0060
+                                         0.3882 -0.0355 -0.0039  0.0001 -0.0037
+                                         0.0002  0.0000  0.0296 -0.0195
+  19. (1.98214) BD ( 1) C  3- H 11
+               ( 61.47%)   0.7840* C  3 s( 32.85%)p 2.04( 67.13%)d 0.00(  0.03%)
+                                         0.0000  0.5730 -0.0109 -0.1715  0.0170
+                                         0.8010  0.0040 -0.0029  0.0000 -0.0054
+                                         0.0000 -0.0001 -0.0121 -0.0087
+               ( 38.53%)   0.6207* H 11 s( 99.89%)p 0.00(  0.11%)
+                                         0.9995 -0.0016  0.0070 -0.0320  0.0001
+  20. (1.98674) BD ( 1) N  4- C  5
+               ( 60.05%)   0.7749* N  4 s( 38.30%)p 1.61( 61.56%)d 0.00(  0.15%)
+                                         0.0000  0.6187  0.0147  0.0511 -0.0223
+                                        -0.7825  0.0128  0.0025 -0.0001  0.0149
+                                         0.0000 -0.0001 -0.0286 -0.0206
+               ( 39.95%)   0.6321* C  5 s( 36.14%)p 1.76( 63.76%)d 0.00(  0.10%)
+                                         0.0000  0.6012  0.0003  0.0975  0.0526
+                                         0.7902  0.0308 -0.0019  0.0001  0.0028
+                                         0.0000 -0.0001 -0.0252 -0.0176
+  21. (1.88084) BD ( 2) N  4- C  5
+               ( 57.61%)   0.7590* N  4 s(  0.00%)p 1.00( 99.79%)d 0.00(  0.21%)
+                                         0.0000  0.0000  0.0000  0.0037 -0.0001
+                                        -0.0029  0.0001 -0.9989  0.0140 -0.0001
+                                         0.0285  0.0353 -0.0002  0.0000
+               ( 42.39%)   0.6511* C  5 s(  0.00%)p 1.00( 99.87%)d 0.00(  0.13%)
+                                         0.0000  0.0000  0.0000  0.0037  0.0000
+                                        -0.0029 -0.0001 -0.9992  0.0141  0.0002
+                                         0.0054 -0.0360  0.0001  0.0002
+  22. (1.98166) BD ( 1) C  5- C  6
+               ( 49.74%)   0.7052* C  5 s( 38.19%)p 1.62( 61.78%)d 0.00(  0.03%)
+                                         0.0000  0.6180  0.0039  0.5704 -0.0169
+                                        -0.5403  0.0152  0.0037 -0.0001 -0.0150
+                                         0.0001 -0.0001 -0.0032 -0.0082
+               ( 50.26%)   0.7090* C  6 s( 29.77%)p 2.36( 70.19%)d 0.00(  0.04%)
+                                         0.0000  0.5455  0.0110 -0.6169 -0.0086
+                                         0.5667  0.0067 -0.0039  0.0000 -0.0182
+                                         0.0001 -0.0001  0.0023 -0.0101
+  23. (1.98949) BD ( 1) C  5- O  7
+               ( 29.67%)   0.5447* C  5 s( 25.57%)p 2.90( 74.15%)d 0.01(  0.28%)
+                                         0.0000  0.5056 -0.0101 -0.8117 -0.0201
+                                        -0.2804 -0.0605 -0.0022  0.0001  0.0274
+                                         0.0002  0.0001  0.0356 -0.0277
+               ( 70.33%)   0.8386* O  7 s( 33.19%)p 2.01( 66.73%)d 0.00(  0.09%)
+                                         0.0000  0.5761  0.0020  0.7995  0.0051
+                                         0.1671 -0.0116  0.0025  0.0001  0.0220
+                                         0.0001  0.0000  0.0123 -0.0154
+  24. (1.97760) BD ( 1) C  6- H 12
+               ( 62.50%)   0.7906* C  6 s( 23.65%)p 3.23( 76.32%)d 0.00(  0.03%)
+                                         0.0000  0.4863 -0.0021  0.7838 -0.0002
+                                         0.3856 -0.0118  0.0018  0.0000  0.0140
+                                         0.0000  0.0000  0.0051 -0.0093
+               ( 37.50%)   0.6124* H 12 s( 99.90%)p 0.00(  0.10%)
+                                         0.9995 -0.0003 -0.0283 -0.0143 -0.0001
+  25. (1.97222) BD ( 1) C  6- H 13
+               ( 61.97%)   0.7872* C  6 s( 23.29%)p 3.29( 76.67%)d 0.00(  0.03%)
+                                         0.0000  0.4826 -0.0034 -0.0437  0.0112
+                                        -0.5164 -0.0031 -0.7056  0.0057  0.0024
+                                         0.0048  0.0143 -0.0040  0.0097
+               ( 38.03%)   0.6167* H 13 s( 99.91%)p 0.00(  0.09%)
+                                         0.9995 -0.0022  0.0000  0.0185  0.0245
+  26. (1.97222) BD ( 1) C  6- H 14
+               ( 61.97%)   0.7872* C  6 s( 23.30%)p 3.29( 76.67%)d 0.00(  0.03%)
+                                         0.0000  0.4826 -0.0033 -0.0490  0.0112
+                                        -0.5125 -0.0031  0.7082 -0.0056  0.0025
+                                        -0.0050 -0.0142 -0.0039  0.0098
+               ( 38.03%)   0.6167* H 14 s( 99.91%)p 0.00(  0.09%)
+                                         0.9995 -0.0022  0.0001  0.0184 -0.0247
+ ---------------- non-Lewis ----------------------------------------------------
+  27. (0.01997) BD*( 1) C  1- C  2
+               ( 50.19%)   0.7085* C  1 s( 30.29%)p 2.30( 69.67%)d 0.00(  0.04%)
+                                         0.0000 -0.5503 -0.0052 -0.8306 -0.0046
+                                        -0.0820  0.0025 -0.0029  0.0000 -0.0028
+                                        -0.0001  0.0000 -0.0175  0.0103
+               ( 49.81%)  -0.7058* C  2 s( 37.90%)p 1.64( 62.07%)d 0.00(  0.03%)
+                                         0.0000 -0.6156 -0.0090  0.7830 -0.0077
+                                         0.0862  0.0106  0.0027  0.0000 -0.0078
+                                        -0.0001  0.0000 -0.0122  0.0098
+  28. (0.00477) BD*( 1) C  1- H  8
+               ( 38.01%)   0.6165* C  1 s( 23.12%)p 3.32( 76.85%)d 0.00(  0.03%)
+                                         0.0000 -0.4808  0.0018  0.3956  0.0114
+                                        -0.7822  0.0075  0.0037  0.0000  0.0095
+                                         0.0000  0.0001  0.0121  0.0096
+               ( 61.99%)  -0.7873* H  8 s( 99.90%)p 0.00(  0.10%)
+                                        -0.9995  0.0001 -0.0153  0.0273 -0.0001
+  29. (0.01273) BD*( 1) C  1- H  9
+               ( 37.95%)   0.6160* C  1 s( 23.29%)p 3.29( 76.68%)d 0.00(  0.03%)
+                                         0.0000 -0.4826  0.0012  0.2790  0.0099
+                                         0.4344 -0.0034 -0.7071  0.0056 -0.0033
+                                         0.0057  0.0137  0.0029 -0.0098
+               ( 62.05%)  -0.7877* H  9 s( 99.91%)p 0.00(  0.09%)
+                                        -0.9995  0.0032 -0.0107 -0.0147  0.0248
+  30. (0.01273) BD*( 1) C  1- H 10
+               ( 37.95%)   0.6160* C  1 s( 23.29%)p 3.29( 76.68%)d 0.00(  0.03%)
+                                         0.0000 -0.4826  0.0011  0.2738  0.0099
+                                         0.4385 -0.0035  0.7067 -0.0055 -0.0033
+                                        -0.0055 -0.0138  0.0030 -0.0098
+               ( 62.05%)  -0.7877* H 10 s( 99.91%)p 0.00(  0.09%)
+                                        -0.9995  0.0032 -0.0106 -0.0148 -0.0247
+  31. (0.03258) BD*( 1) C  2- C  3
+               ( 49.09%)   0.7007* C  2 s( 39.99%)p 1.50( 59.96%)d 0.00(  0.05%)
+                                         0.0000  0.6324 -0.0052  0.4258 -0.0246
+                                         0.6460  0.0199 -0.0003 -0.0001  0.0177
+                                         0.0000  0.0000  0.0014 -0.0128
+               ( 50.91%)  -0.7135* C  3 s( 38.18%)p 1.62( 61.75%)d 0.00(  0.07%)
+                                         0.0000  0.6179  0.0067 -0.5505 -0.0308
+                                        -0.5594  0.0229 -0.0005 -0.0002  0.0200
+                                         0.0000  0.0000 -0.0077 -0.0162
+  32. (0.26697) BD*( 2) C  2- C  3
+               ( 50.29%)   0.7091* C  2 s(  0.00%)p 1.00( 99.94%)d 0.00(  0.06%)
+                                         0.0000  0.0000  0.0000 -0.0037 -0.0001
+                                         0.0029  0.0000  0.9995 -0.0183  0.0000
+                                         0.0205  0.0141 -0.0001  0.0001
+               ( 49.71%)  -0.7051* C  3 s(  0.00%)p 1.00( 99.92%)d 0.00(  0.08%)
+                                         0.0000  0.0000  0.0000 -0.0037  0.0001
+                                         0.0029  0.0000  0.9994 -0.0225  0.0001
+                                        -0.0099 -0.0258  0.0001  0.0001
+  33. (0.04218) BD*( 1) C  2- O  7
+               ( 69.89%)   0.8360* C  2 s( 21.97%)p 3.54( 77.77%)d 0.01(  0.26%)
+                                         0.0000  0.4687  0.0023  0.4520 -0.0139
+                                        -0.7550 -0.0568  0.0038  0.0001 -0.0396
+                                         0.0002 -0.0003 -0.0142 -0.0289
+               ( 30.11%)  -0.5488* O  7 s( 32.38%)p 2.09( 67.53%)d 0.00(  0.09%)
+                                         0.0000  0.5691  0.0017 -0.5392 -0.0137
+                                         0.6199 -0.0093 -0.0038  0.0000 -0.0170
+                                         0.0001 -0.0002 -0.0178 -0.0156
+  34. (0.01242) BD*( 1) C  3- N  4
+               ( 59.74%)   0.7729* C  3 s( 28.72%)p 2.48( 71.17%)d 0.00(  0.12%)
+                                         0.0000  0.5358  0.0117  0.8142  0.0467
+                                        -0.2101  0.0496  0.0036  0.0000 -0.0194
+                                         0.0003 -0.0001  0.0177 -0.0219
+               ( 40.26%)  -0.6345* N  4 s( 30.57%)p 2.27( 69.31%)d 0.00(  0.13%)
+                                         0.0000  0.5528  0.0073 -0.7356 -0.0060
+                                         0.3882 -0.0355 -0.0039  0.0001 -0.0037
+                                         0.0002  0.0000  0.0296 -0.0195
+  35. (0.01995) BD*( 1) C  3- H 11
+               ( 38.53%)   0.6207* C  3 s( 32.85%)p 2.04( 67.13%)d 0.00(  0.03%)
+                                         0.0000 -0.5730  0.0109  0.1715 -0.0170
+                                        -0.8010 -0.0040  0.0029  0.0000  0.0054
+                                         0.0000  0.0001  0.0121  0.0087
+               ( 61.47%)  -0.7840* H 11 s( 99.89%)p 0.00(  0.11%)
+                                        -0.9995  0.0016 -0.0070  0.0320 -0.0001
+  36. (0.02501) BD*( 1) N  4- C  5
+               ( 39.95%)   0.6321* N  4 s( 38.30%)p 1.61( 61.56%)d 0.00(  0.15%)
+                                         0.0000 -0.6187 -0.0147 -0.0511  0.0223
+                                         0.7825 -0.0128 -0.0025  0.0001 -0.0149
+                                         0.0000  0.0001  0.0286  0.0206
+               ( 60.05%)  -0.7749* C  5 s( 36.14%)p 1.76( 63.76%)d 0.00(  0.10%)
+                                         0.0000 -0.6012 -0.0003 -0.0975 -0.0526
+                                        -0.7902 -0.0308  0.0019 -0.0001 -0.0028
+                                         0.0000  0.0001  0.0252  0.0176
+  37. (0.31810) BD*( 2) N  4- C  5
+               ( 42.39%)   0.6511* N  4 s(  0.00%)p 1.00( 99.79%)d 0.00(  0.21%)
+                                         0.0000  0.0000  0.0000 -0.0037  0.0001
+                                         0.0029 -0.0001  0.9989 -0.0140  0.0001
+                                        -0.0285 -0.0353  0.0002  0.0000
+               ( 57.61%)  -0.7590* C  5 s(  0.00%)p 1.00( 99.87%)d 0.00(  0.13%)
+                                         0.0000  0.0000  0.0000 -0.0037  0.0000
+                                         0.0029  0.0001  0.9992 -0.0141 -0.0002
+                                        -0.0054  0.0360 -0.0001 -0.0002
+  38. (0.02590) BD*( 1) C  5- C  6
+               ( 50.26%)   0.7090* C  5 s( 38.19%)p 1.62( 61.78%)d 0.00(  0.03%)
+                                         0.0000  0.6180  0.0039  0.5704 -0.0169
+                                        -0.5403  0.0152  0.0037 -0.0001 -0.0150
+                                         0.0001 -0.0001 -0.0032 -0.0082
+               ( 49.74%)  -0.7052* C  6 s( 29.77%)p 2.36( 70.19%)d 0.00(  0.04%)
+                                         0.0000  0.5455  0.0110 -0.6169 -0.0086
+                                         0.5667  0.0067 -0.0039  0.0000 -0.0182
+                                         0.0001 -0.0001  0.0023 -0.0101
+  39. (0.07240) BD*( 1) C  5- O  7
+               ( 70.33%)   0.8386* C  5 s( 25.57%)p 2.90( 74.15%)d 0.01(  0.28%)
+                                         0.0000  0.5056 -0.0101 -0.8117 -0.0201
+                                        -0.2804 -0.0605 -0.0022  0.0001  0.0274
+                                         0.0002  0.0001  0.0356 -0.0277
+               ( 29.67%)  -0.5447* O  7 s( 33.19%)p 2.01( 66.73%)d 0.00(  0.09%)
+                                         0.0000  0.5761  0.0020  0.7995  0.0051
+                                         0.1671 -0.0116  0.0025  0.0001  0.0220
+                                         0.0001  0.0000  0.0123 -0.0154
+  40. (0.00416) BD*( 1) C  6- H 12
+               ( 37.50%)   0.6124* C  6 s( 23.65%)p 3.23( 76.32%)d 0.00(  0.03%)
+                                         0.0000 -0.4863  0.0021 -0.7838  0.0002
+                                        -0.3856  0.0118 -0.0018  0.0000 -0.0140
+                                         0.0000  0.0000 -0.0051  0.0093
+               ( 62.50%)  -0.7906* H 12 s( 99.90%)p 0.00(  0.10%)
+                                        -0.9995  0.0003  0.0283  0.0143  0.0001
+  41. (0.01085) BD*( 1) C  6- H 13
+               ( 38.03%)   0.6167* C  6 s( 23.29%)p 3.29( 76.67%)d 0.00(  0.03%)
+                                         0.0000 -0.4826  0.0034  0.0437 -0.0112
+                                         0.5164  0.0031  0.7056 -0.0057 -0.0024
+                                        -0.0048 -0.0143  0.0040 -0.0097
+               ( 61.97%)  -0.7872* H 13 s( 99.91%)p 0.00(  0.09%)
+                                        -0.9995  0.0022  0.0000 -0.0185 -0.0245
+  42. (0.01085) BD*( 1) C  6- H 14
+               ( 38.03%)   0.6167* C  6 s( 23.30%)p 3.29( 76.67%)d 0.00(  0.03%)
+                                         0.0000 -0.4826  0.0033  0.0490 -0.0112
+                                         0.5125  0.0031 -0.7082  0.0056 -0.0025
+                                         0.0050  0.0142  0.0039 -0.0098
+               ( 61.97%)  -0.7872* H 14 s( 99.91%)p 0.00(  0.09%)
+                                        -0.9995  0.0022 -0.0001 -0.0184  0.0247
+  43. (0.00281) RY ( 1) C  1            s(  0.05%)p99.99( 95.71%)d92.75(  4.25%)
+                                         0.0000  0.0002  0.0214 -0.0028  0.1419
+                                        -0.0108 -0.9679  0.0000  0.0040 -0.2042
+                                         0.0010 -0.0006  0.0278 -0.0058
+  44. (0.00177) RY ( 2) C  1            s(  0.00%)p 1.00( 71.93%)d 0.39( 28.06%)
+                                         0.0000  0.0000  0.0016  0.0000  0.0047
+                                         0.0000 -0.0030 -0.0135 -0.8480 -0.0011
+                                        -0.5095 -0.1449  0.0024 -0.0026
+  45. (0.00053) RY ( 3) C  1            s( 31.00%)p 2.17( 67.38%)d 0.05(  1.62%)
+                                         0.0000  0.0097  0.5567 -0.0161  0.8134
+                                         0.0017  0.1093  0.0000  0.0043  0.1133
+                                         0.0013  0.0008  0.0450 -0.0365
+  46. (0.00010) RY ( 4) C  1            s( 50.58%)p 0.35( 17.49%)d 0.63( 31.93%)
+  47. (0.00003) RY ( 5) C  1            s(  0.32%)p 8.01(  2.55%)d99.99( 97.13%)
+  48. (0.00002) RY ( 6) C  1            s(  0.05%)p99.99( 28.04%)d99.99( 71.92%)
+  49. (0.00002) RY ( 7) C  1            s( 16.02%)p 1.02( 16.40%)d 4.22( 67.58%)
+  50. (0.00001) RY ( 8) C  1            s(  0.00%)p 1.00(  0.04%)d99.99( 99.96%)
+  51. (0.00000) RY ( 9) C  1            s(  2.01%)p 0.29(  0.59%)d48.57( 97.40%)
+  52. (0.00577) RY ( 1) C  2            s( 29.57%)p 1.75( 51.77%)d 0.63( 18.66%)
+                                         0.0000 -0.0055  0.5437  0.0171  0.5308
+                                         0.0327 -0.4843  0.0000  0.0023 -0.0511
+                                         0.0023  0.0011  0.4228 -0.0725
+  53. (0.00451) RY ( 2) C  2            s(  5.36%)p17.29( 92.66%)d 0.37(  1.98%)
+                                         0.0000  0.0241  0.2303  0.0220  0.4381
+                                        -0.0471  0.8555  0.0003 -0.0017  0.0244
+                                         0.0006  0.0004  0.1380 -0.0110
+  54. (0.00230) RY ( 3) C  2            s(  0.00%)p 1.00( 83.33%)d 0.20( 16.67%)
+                                         0.0000  0.0000  0.0017 -0.0001 -0.0036
+                                         0.0001  0.0031  0.0264  0.9124 -0.0004
+                                        -0.2451 -0.3266  0.0030 -0.0004
+  55. (0.00134) RY ( 4) C  2            s(  0.00%)p 1.00(  4.44%)d21.53( 95.56%)
+                                         0.0000  0.0000  0.0007  0.0000 -0.0012
+                                         0.0000  0.0010 -0.0005  0.2107 -0.0052
+                                        -0.4025  0.8908 -0.0013 -0.0072
+  56. (0.00122) RY ( 5) C  2            s( 36.37%)p 0.73( 26.39%)d 1.02( 37.24%)
+                                         0.0000 -0.0153  0.6029 -0.0186 -0.4972
+                                         0.0206  0.1258 -0.0002 -0.0039 -0.5608
+                                         0.0036 -0.0039 -0.1124 -0.2127
+  57. (0.00102) RY ( 6) C  2            s( 24.94%)p 0.35(  8.67%)d 2.66( 66.39%)
+                                         0.0000 -0.0019  0.4994  0.0094 -0.2921
+                                        -0.0319  0.0151  0.0001 -0.0013  0.7978
+                                        -0.0040  0.0028 -0.1464  0.0773
+  58. (0.00056) RY ( 7) C  2            s(  0.00%)p 1.00( 12.30%)d 7.13( 87.70%)
+                                         0.0000  0.0000  0.0002  0.0001 -0.0017
+                                        -0.0001  0.0013 -0.0161  0.3503  0.0021
+                                         0.8817  0.3156 -0.0032  0.0042
+  59. (0.00035) RY ( 8) C  2            s(  1.27%)p16.17( 20.47%)d61.84( 78.27%)
+                                         0.0000  0.0011  0.1125 -0.0062  0.4370
+                                         0.0236 -0.1143  0.0000  0.0030 -0.0477
+                                        -0.0011 -0.0036 -0.8636 -0.1858
+  60. (0.00001) RY ( 9) C  2            s(  2.63%)p 0.09(  0.24%)d36.92( 97.12%)
+  61. (0.00617) RY ( 1) C  3            s(  7.98%)p 8.81( 70.29%)d 2.72( 21.73%)
+                                         0.0000 -0.0024  0.2825 -0.0372  0.7757
+                                        -0.0248 -0.3147 -0.0001  0.0037 -0.3463
+                                        -0.0002 -0.0024 -0.3079 -0.0507
+  62. (0.00333) RY ( 2) C  3            s( 13.63%)p 6.12( 83.36%)d 0.22(  3.01%)
+                                         0.0000  0.0371  0.3673  0.0451 -0.5319
+                                        -0.0002 -0.7407  0.0002 -0.0002 -0.0962
+                                        -0.0001 -0.0010 -0.1351 -0.0504
+  63. (0.00140) RY ( 3) C  3            s(  0.00%)p 1.00( 41.24%)d 1.42( 58.76%)
+                                         0.0000  0.0000  0.0001 -0.0001 -0.0026
+                                         0.0001  0.0017  0.0172  0.6420  0.0022
+                                         0.7454 -0.1787 -0.0029  0.0056
+  64. (0.00095) RY ( 4) C  3            s( 67.02%)p 0.41( 27.76%)d 0.08(  5.22%)
+                                         0.0000 -0.0265  0.8182 -0.0207 -0.1323
+                                         0.0251  0.5089 -0.0001 -0.0026 -0.1657
+                                         0.0022 -0.0008  0.1036 -0.1184
+  65. (0.00063) RY ( 5) C  3            s(  0.00%)p 1.00( 50.00%)d 1.00( 50.00%)
+                                         0.0000  0.0000  0.0010  0.0000 -0.0025
+                                         0.0001  0.0021  0.0032  0.7071 -0.0005
+                                        -0.6660 -0.2375  0.0042 -0.0032
+  66. (0.00022) RY ( 6) C  3            s(  2.55%)p 6.37( 16.27%)d31.80( 81.18%)
+                                         0.0000  0.0076  0.1596 -0.0190  0.2700
+                                         0.0022 -0.2991 -0.0001  0.0015  0.2607
+                                         0.0044  0.0033  0.8570 -0.0967
+  67. (0.00006) RY ( 7) C  3            s(  5.59%)p 0.36(  2.02%)d16.53( 92.39%)
+  68. (0.00002) RY ( 8) C  3            s(  0.00%)p 1.00(  8.83%)d10.32( 91.17%)
+  69. (0.00000) RY ( 9) C  3            s(  3.48%)p 0.08(  0.26%)d27.68( 96.26%)
+  70. (0.00269) RY ( 1) N  4            s(  5.37%)p16.19( 86.88%)d 1.44(  7.75%)
+                                         0.0000 -0.0104  0.2315  0.0285 -0.7752
+                                         0.0129 -0.5167  0.0001 -0.0016 -0.2374
+                                         0.0003 -0.0015 -0.1438 -0.0209
+  71. (0.00118) RY ( 2) N  4            s(  0.10%)p99.99( 99.45%)d 4.63(  0.45%)
+                                         0.0000 -0.0022  0.0312  0.0152  0.5620
+                                        -0.0294 -0.8232  0.0001  0.0045  0.0079
+                                        -0.0005  0.0002 -0.0418  0.0521
+  72. (0.00048) RY ( 3) N  4            s(  0.00%)p 1.00(  2.78%)d34.99( 97.22%)
+                                         0.0000  0.0000  0.0006  0.0000  0.0007
+                                         0.0000 -0.0003  0.0021 -0.1667 -0.0048
+                                        -0.7022  0.6921  0.0005 -0.0080
+  73. (0.00027) RY ( 4) N  4            s(  0.00%)p 1.00( 87.46%)d 0.14( 12.54%)
+                                         0.0000  0.0000  0.0018 -0.0001 -0.0033
+                                         0.0001  0.0030  0.0282  0.9348 -0.0013
+                                         0.1100  0.3366 -0.0015 -0.0013
+  74. (0.00010) RY ( 5) N  4            s( 31.55%)p 0.38( 11.95%)d 1.79( 56.50%)
+                                         0.0000 -0.0104  0.5616 -0.0270  0.2645
+                                         0.0144  0.2205 -0.0002 -0.0008 -0.4150
+                                        -0.0002 -0.0049 -0.6152 -0.1194
+  75. (0.00008) RY ( 6) N  4            s( 46.73%)p 0.01(  0.48%)d 1.13( 52.79%)
+  76. (0.00007) RY ( 7) N  4            s(  7.91%)p 0.14(  1.13%)d11.50( 90.96%)
+  77. (0.00002) RY ( 8) N  4            s(  0.00%)p 1.00(  9.97%)d 9.03( 90.03%)
+  78. (0.00002) RY ( 9) N  4            s(  8.34%)p 0.06(  0.50%)d10.93( 91.16%)
+  79. (0.01396) RY ( 1) C  5            s(  6.36%)p13.53( 86.03%)d 1.20(  7.61%)
+                                         0.0000 -0.0002  0.2521 -0.0689  0.4681
+                                        -0.0559  0.7958 -0.0001 -0.0004 -0.2511
+                                         0.0002 -0.0011 -0.1131  0.0159
+  80. (0.00780) RY ( 2) C  5            s( 30.43%)p 1.56( 47.48%)d 0.73( 22.09%)
+                                         0.0000  0.0102  0.5515 -0.0139 -0.6813
+                                         0.0382  0.0947 -0.0002 -0.0015 -0.4598
+                                         0.0019 -0.0017  0.0778 -0.0588
+  81. (0.00291) RY ( 3) C  5            s(  0.00%)p 1.00( 97.58%)d 0.02(  2.42%)
+                                         0.0000  0.0000  0.0010  0.0000  0.0037
+                                         0.0000 -0.0034 -0.0132 -0.9877 -0.0020
+                                        -0.1493 -0.0433  0.0008 -0.0008
+  82. (0.00217) RY ( 4) C  5            s(  0.00%)p 1.00(  1.36%)d72.74( 98.64%)
+                                         0.0000  0.0000  0.0002  0.0001  0.0004
+                                        -0.0001 -0.0004 -0.0298 -0.1126 -0.0017
+                                         0.4983  0.8592 -0.0042 -0.0012
+  83. (0.00140) RY ( 5) C  5            s(  0.42%)p 9.97(  4.17%)d99.99( 95.42%)
+                                         0.0000 -0.0070  0.0643  0.0291  0.0095
+                                         0.0178  0.2010  0.0000 -0.0009  0.2824
+                                         0.0032  0.0029  0.9193 -0.1709
+  84. (0.00099) RY ( 6) C  5            s(  1.45%)p32.76( 47.36%)d35.40( 51.19%)
+                                         0.0000  0.0001  0.1202  0.0116  0.4884
+                                        -0.0011 -0.4847  0.0006  0.0023 -0.6396
+                                         0.0213 -0.0122  0.3059  0.0927
+  85. (0.00095) RY ( 7) C  5            s(  0.00%)p 1.00(  1.22%)d81.08( 98.78%)
+                                         0.0000  0.0000  0.0030  0.0003  0.0107
+                                        -0.0001 -0.0106 -0.0215  0.1072 -0.0180
+                                        -0.8537  0.5084  0.0080 -0.0056
+  86. (0.00035) RY ( 8) C  5            s( 56.74%)p 0.27( 15.15%)d 0.50( 28.11%)
+                                         0.0000 -0.0115  0.7532  0.0174  0.2714
+                                        -0.0134 -0.2781  0.0002  0.0019  0.4426
+                                         0.0001 -0.0005 -0.1745 -0.2341
+  87. (0.00001) RY ( 9) C  5            s(  4.70%)p 0.02(  0.10%)d20.24( 95.20%)
+  88. (0.00211) RY ( 1) C  6            s(  0.05%)p99.99( 96.44%)d69.46(  3.51%)
+                                         0.0000  0.0005  0.0225 -0.0072 -0.6800
+                                        -0.0113 -0.7083  0.0000 -0.0006  0.0193
+                                         0.0008  0.0005  0.1856 -0.0172
+  89. (0.00164) RY ( 2) C  6            s(  0.00%)p 1.00( 74.11%)d 0.35( 25.89%)
+                                         0.0000  0.0000  0.0014  0.0000 -0.0042
+                                         0.0000  0.0033  0.0130  0.8607 -0.0023
+                                        -0.3049  0.4074 -0.0001 -0.0040
+  90. (0.00040) RY ( 3) C  6            s( 33.75%)p 1.93( 65.19%)d 0.03(  1.07%)
+                                         0.0000  0.0053  0.5809  0.0153 -0.5815
+                                        -0.0172  0.5596  0.0000 -0.0052 -0.0357
+                                         0.0012 -0.0017 -0.0683 -0.0688
+  91. (0.00014) RY ( 4) C  6            s( 47.48%)p 0.47( 22.15%)d 0.64( 30.36%)
+                                         0.0000 -0.0044  0.6891 -0.0120  0.3560
+                                         0.0051 -0.3077 -0.0001  0.0021  0.5504
+                                        -0.0013  0.0018 -0.0084  0.0255
+  92. (0.00003) RY ( 5) C  6            s(  0.00%)p 1.00(  3.74%)d25.74( 96.26%)
+  93. (0.00002) RY ( 6) C  6            s( 15.39%)p 0.80( 12.24%)d 4.70( 72.36%)
+  94. (0.00001) RY ( 7) C  6            s(  0.00%)p 1.00(  0.67%)d99.99( 99.33%)
+  95. (0.00001) RY ( 8) C  6            s(  0.00%)p 1.00( 25.27%)d 2.96( 74.73%)
+  96. (0.00000) RY ( 9) C  6            s(  3.32%)p 0.10(  0.35%)d29.05( 96.34%)
+  97. (0.00239) RY ( 1) O  7            s( 21.35%)p 3.26( 69.64%)d 0.42(  9.01%)
+                                         0.0000 -0.0107  0.4619 -0.0022 -0.2887
+                                        -0.0095 -0.7829  0.0000  0.0013 -0.1419
+                                         0.0018 -0.0001  0.2578 -0.0590
+  98. (0.00070) RY ( 2) O  7            s(  4.59%)p19.12( 87.83%)d 1.65(  7.58%)
+                                         0.0000  0.0018  0.2143 -0.0085  0.8921
+                                        -0.0033 -0.2868  0.0000  0.0037  0.0100
+                                         0.0001 -0.0015 -0.2663 -0.0690
+  99. (0.00056) RY ( 3) O  7            s(  0.00%)p 1.00( 58.50%)d 0.71( 41.50%)
+                                         0.0000  0.0000  0.0008  0.0000 -0.0021
+                                         0.0000  0.0024 -0.0129  0.7647 -0.0029
+                                        -0.3834  0.5177 -0.0003 -0.0052
+ 100. (0.00040) RY ( 4) O  7            s(  0.00%)p 1.00( 23.55%)d 3.25( 76.44%)
+                                         0.0000  0.0000  0.0056 -0.0001  0.0013
+                                         0.0000  0.0012  0.0090 -0.4852 -0.0005
+                                        -0.8713  0.0717  0.0020 -0.0065
+ 101. (0.00034) RY ( 5) O  7            s( 59.99%)p 0.26( 15.35%)d 0.41( 24.66%)
+                                         0.0000  0.0029  0.7746 -0.0080 -0.1350
+                                        -0.0041  0.3677 -0.0001  0.0011  0.4535
+                                         0.0045 -0.0001 -0.1892 -0.0710
+ 102. (0.00008) RY ( 6) O  7            s( 12.50%)p 1.64( 20.49%)d 5.36( 67.01%)
+ 103. (0.00007) RY ( 7) O  7            s(  1.02%)p 5.86(  5.99%)d90.98( 92.99%)
+ 104. (0.00002) RY ( 8) O  7            s(  0.56%)p 1.61(  0.91%)d99.99( 98.53%)
+ 105. (0.00000) RY ( 9) O  7            s(  0.00%)p 1.00( 18.03%)d 4.55( 81.97%)
+ 106. (0.00108) RY ( 1) H  8            s( 96.20%)p 0.04(  3.80%)
+                                         0.0060  0.9808 -0.1361  0.1394 -0.0011
+ 107. (0.00015) RY ( 2) H  8            s(  0.00%)p 1.00(100.00%)
+                                         0.0000  0.0000 -0.0081 -0.0001  1.0000
+ 108. (0.00014) RY ( 3) H  8            s(  0.07%)p99.99( 99.93%)
+                                         0.0041  0.0260  0.8009  0.5982  0.0065
+ 109. (0.00002) RY ( 4) H  8            s(  3.82%)p25.15( 96.18%)
+ 110. (0.00230) RY ( 1) H  9            s( 98.12%)p 0.02(  1.88%)
+                                         0.0064  0.9905 -0.1194 -0.0400  0.0546
+ 111. (0.00016) RY ( 2) H  9            s(  0.04%)p99.99( 99.96%)
+                                         0.0031  0.0209  0.3571 -0.8979 -0.2564
+ 112. (0.00014) RY ( 3) H  9            s(  0.27%)p99.99( 99.73%)
+                                         0.0084  0.0513  0.7137  0.0871  0.6931
+ 113. (0.00003) RY ( 4) H  9            s(  1.66%)p59.09( 98.34%)
+ 114. (0.00230) RY ( 1) H 10            s( 98.12%)p 0.02(  1.88%)
+                                         0.0064  0.9905 -0.1190 -0.0403 -0.0552
+ 115. (0.00016) RY ( 2) H 10            s(  0.04%)p99.99( 99.96%)
+                                         0.0031  0.0209  0.3552 -0.8965  0.2639
+ 116. (0.00014) RY ( 3) H 10            s(  0.27%)p99.99( 99.73%)
+                                         0.0084  0.0513  0.7186  0.0832 -0.6885
+ 117. (0.00003) RY ( 4) H 10            s(  1.66%)p59.13( 98.34%)
+ 118. (0.00087) RY ( 1) H 11            s( 97.43%)p 0.03(  2.57%)
+                                         0.0065  0.9870  0.0285  0.1577 -0.0002
+ 119. (0.00023) RY ( 2) H 11            s(  0.00%)p 1.00(100.00%)
+                                         0.0000  0.0002  0.0039 -0.0031 -1.0000
+ 120. (0.00008) RY ( 3) H 11            s(  2.06%)p47.59( 97.94%)
+ 121. (0.00003) RY ( 4) H 11            s(  0.62%)p99.99( 99.38%)
+ 122. (0.00185) RY ( 1) H 12            s( 98.62%)p 0.01(  1.38%)
+                                         0.0040  0.9930  0.1120  0.0360  0.0003
+ 123. (0.00013) RY ( 2) H 12            s(  0.00%)p 1.00(100.00%)
+                                         0.0052 -0.0009 -0.2981  0.9545 -0.0020
+ 124. (0.00013) RY ( 3) H 12            s(  0.00%)p 1.00(100.00%)
+                                         0.0000  0.0000 -0.0031  0.0011  1.0000
+ 125. (0.00003) RY ( 4) H 12            s(  1.48%)p66.45( 98.52%)
+ 126. (0.00190) RY ( 1) H 13            s( 97.61%)p 0.02(  2.39%)
+                                         0.0061  0.9880  0.0684 -0.1205 -0.0683
+ 127. (0.00016) RY ( 2) H 13            s(  0.02%)p99.99( 99.98%)
+                                         0.0025  0.0125 -0.8041 -0.5188  0.2901
+ 128. (0.00015) RY ( 3) H 13            s(  0.29%)p99.99( 99.71%)
+                                         0.0071  0.0537 -0.5590  0.4982 -0.6606
+ 129. (0.00002) RY ( 4) H 13            s(  2.17%)p45.05( 97.83%)
+ 130. (0.00190) RY ( 1) H 14            s( 97.62%)p 0.02(  2.38%)
+                                         0.0061  0.9880  0.0677 -0.1200  0.0694
+ 131. (0.00016) RY ( 2) H 14            s(  0.02%)p99.99( 99.98%)
+                                         0.0025  0.0123 -0.8020 -0.5206 -0.2926
+ 132. (0.00015) RY ( 3) H 14            s(  0.29%)p99.99( 99.71%)
+                                         0.0071  0.0536 -0.5635  0.5019  0.6539
+ 133. (0.00002) RY ( 4) H 14            s(  2.17%)p45.13( 97.83%)
+
+
+ NHO DIRECTIONALITY AND BOND BENDING (deviation from line of nuclear centers at
+                                      the position of maximum hybrid amplitude)
+
+         [Thresholds for printing:  angular deviation  >  1.0 degree]
+                                    p- or d-character  > 25.0%
+                                    orbital occupancy  >  0.10e
+
+                        Line of Centers        Hybrid 1             Hybrid 2
+                        ---------------  -------------------  ------------------
+           NBO            Theta   Phi    Theta   Phi    Dev   Theta   Phi    Dev
+ ===============================================================================
+   8. LP ( 1) N  4          --     --     89.9   35.4   --      --     --    --
+   9. LP ( 1) O  7          --     --     89.9  251.1   --      --     --    --
+  10. LP ( 2) O  7          --     --      0.8   88.2   --      --     --    --
+  15. BD ( 1) C  2- C  3   90.0   51.0    90.0   55.4   4.4    90.0  227.0   4.0
+  16. BD ( 2) C  2- C  3   90.0   51.0     0.9   51.7  89.1   179.0  258.6  89.1
+  17. BD ( 1) C  2- O  7   89.7  304.2    89.8  301.6   2.6    90.3  130.3   6.1
+  18. BD ( 1) C  3- N  4   89.7  340.7    89.8  344.4   3.8    90.3  153.4   7.3
+  20. BD ( 1) N  4- C  5   89.9  265.3    89.8  272.2   6.9    90.1   82.5   2.8
+  21. BD ( 2) N  4- C  5   89.9  265.3     1.3  220.3  88.9   178.8   89.2  88.7
+  23. BD ( 1) C  5- O  7   90.1  198.9     --     --    --     89.8   12.9   6.0
+  24. BD ( 1) C  6- H 12   89.9   27.8    89.9   26.8   1.0     --     --    --
+
+
+ SECOND ORDER PERTURBATION THEORY ANALYSIS OF FOCK MATRIX IN NBO BASIS
+
+     Threshold for printing:   0.50 kcal/mol
+                                                          E(2) E(NL)-E(L) F(L,NL)
+      Donor (L) NBO              Acceptor (NL) NBO      kcal/mol   a.u.    a.u.
+ ===============================================================================
+
+ within unit  1
+    1. CR ( 1) C  1            31. BD*( 1) C  2- C  3      1.38   10.36   0.107
+    1. CR ( 1) C  1            56. RY ( 5) C  2            0.67   11.10   0.077
+    1. CR ( 1) C  1           106. RY ( 1) H  8            0.73   10.22   0.077
+    1. CR ( 1) C  1           110. RY ( 1) H  9            0.70   10.16   0.075
+    1. CR ( 1) C  1           114. RY ( 1) H 10            0.70   10.16   0.075
+    2. CR ( 1) C  2            31. BD*( 1) C  2- C  3      1.30   10.40   0.104
+    2. CR ( 1) C  2            33. BD*( 1) C  2- O  7      0.67   10.13   0.073
+    2. CR ( 1) C  2            35. BD*( 1) C  3- H 11      1.13   10.26   0.096
+    2. CR ( 1) C  2            39. BD*( 1) C  5- O  7      1.55   10.14   0.112
+    2. CR ( 1) C  2            45. RY ( 3) C  1            1.47   10.40   0.110
+    2. CR ( 1) C  2            62. RY ( 2) C  3            1.91   10.54   0.127
+    3. CR ( 1) C  3            27. BD*( 1) C  1- C  2      2.18   10.18   0.133
+    3. CR ( 1) C  3            31. BD*( 1) C  2- C  3      0.96   10.36   0.089
+    3. CR ( 1) C  3            36. BD*( 1) N  4- C  5      1.19   10.33   0.099
+    3. CR ( 1) C  3            53. RY ( 2) C  2            2.49   10.56   0.145
+    3. CR ( 1) C  3            71. RY ( 2) N  4            0.52   10.91   0.067
+    3. CR ( 1) C  3           118. RY ( 1) H 11            0.80   10.16   0.080
+    4. CR ( 1) N  4            38. BD*( 1) C  5- C  6      1.38   14.18   0.125
+    4. CR ( 1) N  4            61. RY ( 1) C  3            1.61   14.83   0.138
+    4. CR ( 1) N  4            79. RY ( 1) C  5            4.22   14.48   0.221
+    4. CR ( 1) N  4            84. RY ( 6) C  5            0.58   15.35   0.084
+    5. CR ( 1) C  5            33. BD*( 1) C  2- O  7      1.55   10.15   0.112
+    5. CR ( 1) C  5            34. BD*( 1) C  3- N  4      1.39   10.27   0.107
+    5. CR ( 1) C  5            39. BD*( 1) C  5- O  7      0.71   10.16   0.076
+    5. CR ( 1) C  5            71. RY ( 2) N  4            0.86   10.98   0.087
+    5. CR ( 1) C  5            90. RY ( 3) C  6            1.58   10.41   0.114
+    6. CR ( 1) C  6            36. BD*( 1) N  4- C  5      0.93   10.33   0.087
+    6. CR ( 1) C  6            39. BD*( 1) C  5- O  7      0.56   10.09   0.067
+    6. CR ( 1) C  6            84. RY ( 6) C  5            0.93   11.35   0.091
+    6. CR ( 1) C  6            86. RY ( 8) C  5            0.56   10.89   0.070
+    6. CR ( 1) C  6           122. RY ( 1) H 12            0.77   10.16   0.079
+    6. CR ( 1) C  6           126. RY ( 1) H 13            0.73   10.17   0.077
+    6. CR ( 1) C  6           130. RY ( 1) H 14            0.73   10.17   0.077
+    7. CR ( 1) O  7            52. RY ( 1) C  2            1.67   19.55   0.162
+    7. CR ( 1) O  7            53. RY ( 2) C  2            0.80   19.37   0.111
+    7. CR ( 1) O  7            79. RY ( 1) C  5            2.01   19.29   0.176
+    7. CR ( 1) O  7            80. RY ( 2) C  5            1.19   19.58   0.136
+    8. LP ( 1) N  4            31. BD*( 1) C  2- C  3      4.90    0.87   0.058
+    8. LP ( 1) N  4            35. BD*( 1) C  3- H 11      1.52    0.72   0.030
+    8. LP ( 1) N  4            38. BD*( 1) C  5- C  6      0.80    0.68   0.021
+    8. LP ( 1) N  4            39. BD*( 1) C  5- O  7     11.82    0.60   0.075
+    8. LP ( 1) N  4            61. RY ( 1) C  3            2.58    1.33   0.052
+    8. LP ( 1) N  4            74. RY ( 5) N  4            0.62    2.22   0.033
+    8. LP ( 1) N  4            79. RY ( 1) C  5            6.59    0.98   0.072
+    8. LP ( 1) N  4            80. RY ( 2) C  5            1.09    1.27   0.033
+    9. LP ( 1) O  7            31. BD*( 1) C  2- C  3      3.12    1.07   0.052
+    9. LP ( 1) O  7            36. BD*( 1) N  4- C  5      4.43    1.04   0.061
+    9. LP ( 1) O  7            52. RY ( 1) C  2            3.31    1.44   0.062
+    9. LP ( 1) O  7            79. RY ( 1) C  5            1.60    1.18   0.039
+    9. LP ( 1) O  7            80. RY ( 2) C  5            2.67    1.47   0.056
+   10. LP ( 2) O  7            32. BD*( 2) C  2- C  3     22.64    0.31   0.074
+   10. LP ( 2) O  7            37. BD*( 2) N  4- C  5     30.92    0.29   0.084
+   10. LP ( 2) O  7            54. RY ( 3) C  2            0.66    1.07   0.024
+   10. LP ( 2) O  7            55. RY ( 4) C  2            1.57    2.05   0.051
+   10. LP ( 2) O  7            82. RY ( 4) C  5            1.32    2.17   0.048
+   10. LP ( 2) O  7            85. RY ( 7) C  5            0.90    2.11   0.039
+   11. BD ( 1) C  1- C  2      28. BD*( 1) C  1- H  8      0.64    1.00   0.022
+   11. BD ( 1) C  1- C  2      29. BD*( 1) C  1- H  9      0.77    1.00   0.025
+   11. BD ( 1) C  1- C  2      30. BD*( 1) C  1- H 10      0.77    1.00   0.025
+   11. BD ( 1) C  1- C  2      31. BD*( 1) C  2- C  3      4.37    1.18   0.064
+   11. BD ( 1) C  1- C  2      34. BD*( 1) C  3- N  4      1.02    1.02   0.029
+   11. BD ( 1) C  1- C  2      39. BD*( 1) C  5- O  7      2.39    0.91   0.042
+   11. BD ( 1) C  1- C  2      97. RY ( 1) O  7            0.51    1.74   0.027
+   12. BD ( 1) C  1- H  8      33. BD*( 1) C  2- O  7      7.25    0.75   0.066
+   13. BD ( 1) C  1- H  9      31. BD*( 1) C  2- C  3      2.73    1.02   0.047
+   13. BD ( 1) C  1- H  9      32. BD*( 2) C  2- C  3      4.23    0.46   0.039
+   13. BD ( 1) C  1- H  9      54. RY ( 3) C  2            0.74    1.22   0.027
+   14. BD ( 1) C  1- H 10      31. BD*( 1) C  2- C  3      2.73    1.02   0.047
+   14. BD ( 1) C  1- H 10      32. BD*( 2) C  2- C  3      4.23    0.46   0.039
+   14. BD ( 1) C  1- H 10      54. RY ( 3) C  2            0.74    1.22   0.027
+   15. BD ( 1) C  2- C  3      27. BD*( 1) C  1- C  2      4.61    1.05   0.062
+   15. BD ( 1) C  2- C  3      34. BD*( 1) C  3- N  4      0.51    1.08   0.021
+   15. BD ( 1) C  2- C  3      35. BD*( 1) C  3- H 11      2.66    1.09   0.048
+   15. BD ( 1) C  2- C  3      38. BD*( 1) C  5- C  6      1.84    1.05   0.039
+   15. BD ( 1) C  2- C  3      39. BD*( 1) C  5- O  7      0.67    0.96   0.023
+   15. BD ( 1) C  2- C  3      43. RY ( 1) C  1            0.68    1.28   0.026
+   15. BD ( 1) C  2- C  3      71. RY ( 2) N  4            0.76    1.78   0.033
+   15. BD ( 1) C  2- C  3      80. RY ( 2) C  5            0.58    1.64   0.028
+   16. BD ( 2) C  2- C  3      29. BD*( 1) C  1- H  9      2.77    0.64   0.038
+   16. BD ( 2) C  2- C  3      30. BD*( 1) C  1- H 10      2.77    0.64   0.038
+   16. BD ( 2) C  2- C  3      37. BD*( 2) N  4- C  5      8.91    0.24   0.041
+   16. BD ( 2) C  2- C  3      44. RY ( 2) C  1            0.96    1.25   0.031
+   16. BD ( 2) C  2- C  3      72. RY ( 3) N  4            0.54    2.42   0.032
+   16. BD ( 2) C  2- C  3      99. RY ( 3) O  7            0.90    1.86   0.036
+   17. BD ( 1) C  2- O  7      28. BD*( 1) C  1- H  8      0.97    1.21   0.031
+   17. BD ( 1) C  2- O  7      31. BD*( 1) C  2- C  3      0.82    1.39   0.030
+   17. BD ( 1) C  2- O  7      34. BD*( 1) C  3- N  4      0.87    1.24   0.029
+   17. BD ( 1) C  2- O  7      35. BD*( 1) C  3- H 11      3.16    1.25   0.056
+   17. BD ( 1) C  2- O  7      38. BD*( 1) C  5- C  6      4.02    1.21   0.062
+   17. BD ( 1) C  2- O  7      39. BD*( 1) C  5- O  7      0.78    1.12   0.027
+   17. BD ( 1) C  2- O  7      79. RY ( 1) C  5            2.53    1.50   0.055
+   18. BD ( 1) C  3- N  4      27. BD*( 1) C  1- C  2      5.65    1.06   0.069
+   18. BD ( 1) C  3- N  4      31. BD*( 1) C  2- C  3      1.70    1.25   0.041
+   18. BD ( 1) C  3- N  4      33. BD*( 1) C  2- O  7      1.83    0.97   0.038
+   18. BD ( 1) C  3- N  4      35. BD*( 1) C  3- H 11      0.61    1.10   0.023
+   18. BD ( 1) C  3- N  4      36. BD*( 1) N  4- C  5      1.16    1.21   0.033
+   18. BD ( 1) C  3- N  4      38. BD*( 1) C  5- C  6      8.73    1.06   0.086
+   18. BD ( 1) C  3- N  4      39. BD*( 1) C  5- O  7      2.00    0.98   0.039
+   18. BD ( 1) C  3- N  4      52. RY ( 1) C  2            0.51    1.62   0.026
+   18. BD ( 1) C  3- N  4      79. RY ( 1) C  5            0.63    1.36   0.026
+   18. BD ( 1) C  3- N  4      80. RY ( 2) C  5            1.89    1.65   0.050
+   19. BD ( 1) C  3- H 11      31. BD*( 1) C  2- C  3      1.38    1.04   0.034
+   19. BD ( 1) C  3- H 11      33. BD*( 1) C  2- O  7      3.22    0.77   0.044
+   19. BD ( 1) C  3- H 11      36. BD*( 1) N  4- C  5      2.40    1.01   0.044
+   19. BD ( 1) C  3- H 11      70. RY ( 1) N  4            0.69    1.36   0.027
+   20. BD ( 1) N  4- C  5      27. BD*( 1) C  1- C  2      0.82    1.18   0.028
+   20. BD ( 1) N  4- C  5      34. BD*( 1) C  3- N  4      1.23    1.20   0.034
+   20. BD ( 1) N  4- C  5      35. BD*( 1) C  3- H 11      3.37    1.21   0.057
+   20. BD ( 1) N  4- C  5      38. BD*( 1) C  5- C  6      3.38    1.17   0.056
+   20. BD ( 1) N  4- C  5      62. RY ( 2) C  3            1.89    1.50   0.047
+   21. BD ( 2) N  4- C  5      32. BD*( 2) C  2- C  3     14.31    0.29   0.058
+   21. BD ( 2) N  4- C  5      41. BD*( 1) C  6- H 13      2.32    0.67   0.035
+   21. BD ( 2) N  4- C  5      42. BD*( 1) C  6- H 14      2.32    0.67   0.035
+   21. BD ( 2) N  4- C  5      63. RY ( 3) C  3            2.06    1.55   0.050
+   21. BD ( 2) N  4- C  5      89. RY ( 2) C  6            0.79    1.24   0.028
+   22. BD ( 1) C  5- C  6      33. BD*( 1) C  2- O  7      2.58    0.90   0.043
+   22. BD ( 1) C  5- C  6      34. BD*( 1) C  3- N  4      2.71    1.02   0.047
+   22. BD ( 1) C  5- C  6      36. BD*( 1) N  4- C  5      2.26    1.15   0.045
+   22. BD ( 1) C  5- C  6      40. BD*( 1) C  6- H 12      0.67    1.01   0.023
+   22. BD ( 1) C  5- C  6      41. BD*( 1) C  6- H 13      0.74    1.00   0.024
+   22. BD ( 1) C  5- C  6      42. BD*( 1) C  6- H 14      0.74    1.00   0.024
+   22. BD ( 1) C  5- C  6      70. RY ( 1) N  4            0.83    1.49   0.031
+   23. BD ( 1) C  5- O  7      27. BD*( 1) C  1- C  2      3.83    1.23   0.061
+   23. BD ( 1) C  5- O  7      33. BD*( 1) C  2- O  7      0.69    1.14   0.025
+   23. BD ( 1) C  5- O  7      35. BD*( 1) C  3- H 11      0.65    1.27   0.026
+   23. BD ( 1) C  5- O  7      40. BD*( 1) C  6- H 12      0.89    1.24   0.030
+   23. BD ( 1) C  5- O  7      53. RY ( 2) C  2            2.66    1.61   0.058
+   24. BD ( 1) C  6- H 12      39. BD*( 1) C  5- O  7      7.32    0.75   0.066
+   25. BD ( 1) C  6- H 13      36. BD*( 1) N  4- C  5      2.65    0.99   0.046
+   25. BD ( 1) C  6- H 13      37. BD*( 2) N  4- C  5      4.82    0.44   0.041
+   25. BD ( 1) C  6- H 13      81. RY ( 3) C  5            0.58    1.00   0.021
+   26. BD ( 1) C  6- H 14      36. BD*( 1) N  4- C  5      2.65    0.99   0.046
+   26. BD ( 1) C  6- H 14      37. BD*( 2) N  4- C  5      4.82    0.44   0.041
+   26. BD ( 1) C  6- H 14      81. RY ( 3) C  5            0.58    1.00   0.021
+
+
+ NATURAL BOND ORBITALS (Summary):
+
+                                                     Principal Delocalizations
+           NBO                 Occupancy    Energy   (geminal,vicinal,remote)
+ ===============================================================================
+ Molecular unit  1  (C5H7NO)
+ ------ Lewis --------------------------------------
+    1. CR ( 1) C  1             1.99915    -9.79119  31(v),106(v),110(v),114(v)
+                                                     56(v)
+    2. CR ( 1) C  2             1.99876    -9.83031  62(v),39(v),45(v),31(g)
+                                                     35(v),33(g)
+    3. CR ( 1) C  3             1.99885    -9.78598  53(v),27(v),36(v),31(g)
+                                                     118(v),71(v)
+    4. CR ( 1) N  4             1.99928   -13.79466  79(v),61(v),38(v),84(v)
+    5. CR ( 1) C  5             1.99908    -9.85508  90(v),33(v),34(v),71(v)
+                                                     39(g)
+    6. CR ( 1) C  6             1.99916    -9.78721  36(v),84(v),122(v),126(v)
+                                                     130(v),86(v),39(v)
+    7. CR ( 1) O  7             1.99963   -18.60211  79(v),52(v),80(v),53(v)
+    8. LP ( 1) N  4             1.90807    -0.29274  39(v),79(v),31(v),61(v)
+                                                     35(v),80(v),38(v),74(g)
+    9. LP ( 1) O  7             1.96758    -0.49392  36(v),52(v),31(v),80(v)
+                                                     79(v)
+   10. LP ( 2) O  7             1.68243    -0.29414  37(v),32(v),55(v),82(v)
+                                                     85(v),54(v)
+   11. BD ( 1) C  1- C  2       1.98408    -0.60386  31(g),39(v),34(v),29(g)
+                                                     30(g),28(g),97(v)
+   12. BD ( 1) C  1- H  8       1.97746    -0.45058  33(v)
+   13. BD ( 1) C  1- H  9       1.97457    -0.44964  32(v),31(v),54(v)
+   14. BD ( 1) C  1- H 10       1.97457    -0.44965  32(v),31(v),54(v)
+   15. BD ( 1) C  2- C  3       1.98603    -0.65747  27(g),35(g),38(r),71(v)
+                                                     43(v),39(v),80(r),34(g)
+   16. BD ( 2) C  2- C  3       1.87179    -0.24628  37(v),29(v),30(v),44(v)
+                                                     99(v),72(v)
+   17. BD ( 1) C  2- O  7       1.98402    -0.81835  38(v),35(v),79(v),28(v)
+                                                     34(v),31(g),39(g)
+   18. BD ( 1) C  3- N  4       1.96700    -0.67214  38(v),27(v),39(v),80(v)
+                                                     33(v),31(g),36(g),79(v)
+                                                     35(g),52(v)
+   19. BD ( 1) C  3- H 11       1.98214    -0.47108  33(v),36(v),31(g),70(v)
+   20. BD ( 1) N  4- C  5       1.98674    -0.78479  38(g),35(v),62(v),34(g)
+                                                     27(r)
+   21. BD ( 2) N  4- C  5       1.88084    -0.28116  32(v),41(v),42(v),63(v)
+                                                     89(v)
+   22. BD ( 1) C  5- C  6       1.98166    -0.60285  34(v),33(v),36(g),70(v)
+                                                     41(g),42(g),40(g)
+   23. BD ( 1) C  5- O  7       1.98949    -0.83881  27(v),53(v),40(v),33(g)
+                                                     35(r)
+   24. BD ( 1) C  6- H 12       1.97760    -0.44489  39(v)
+   25. BD ( 1) C  6- H 13       1.97222    -0.44834  37(v),36(v),81(v)
+   26. BD ( 1) C  6- H 14       1.97222    -0.44833  37(v),36(v),81(v)
+ ------ non-Lewis ----------------------------------
+   27. BD*( 1) C  1- C  2       0.01997     0.39024
+   28. BD*( 1) C  1- H  8       0.00477     0.39416
+   29. BD*( 1) C  1- H  9       0.01273     0.39122
+   30. BD*( 1) C  1- H 10       0.01273     0.39122
+   31. BD*( 1) C  2- C  3       0.03258     0.57327
+   32. BD*( 2) C  2- C  3       0.26697     0.01221
+   33. BD*( 1) C  2- O  7       0.04218     0.29801
+   34. BD*( 1) C  3- N  4       0.01242     0.41883
+   35. BD*( 1) C  3- H 11       0.01995     0.43014
+   36. BD*( 1) N  4- C  5       0.02501     0.54231
+   37. BD*( 2) N  4- C  5       0.31810    -0.00505
+   38. BD*( 1) C  5- C  6       0.02590     0.38991
+   39. BD*( 1) C  5- O  7       0.07240     0.30627
+   40. BD*( 1) C  6- H 12       0.00416     0.40592
+   41. BD*( 1) C  6- H 13       0.01085     0.39336
+   42. BD*( 1) C  6- H 14       0.01085     0.39334
+   43. RY ( 1) C  1             0.00281     0.62354
+   44. RY ( 2) C  1             0.00177     1.00004
+   45. RY ( 3) C  1             0.00053     0.56745
+   46. RY ( 4) C  1             0.00010     1.23377
+   47. RY ( 5) C  1             0.00003     2.21100
+   48. RY ( 6) C  1             0.00002     1.70112
+   49. RY ( 7) C  1             0.00002     1.75667
+   50. RY ( 8) C  1             0.00001     2.14553
+   51. RY ( 9) C  1             0.00000     2.09010
+   52. RY ( 1) C  2             0.00577     0.94723
+   53. RY ( 2) C  2             0.00451     0.76916
+   54. RY ( 3) C  2             0.00230     0.77349
+   55. RY ( 4) C  2             0.00134     1.75422
+   56. RY ( 5) C  2             0.00122     1.30627
+   57. RY ( 6) C  2             0.00102     1.76406
+   58. RY ( 7) C  2             0.00056     1.70056
+   59. RY ( 8) C  2             0.00035     1.88183
+   60. RY ( 9) C  2             0.00001     2.14984
+   61. RY ( 1) C  3             0.00617     1.03347
+   62. RY ( 2) C  3             0.00333     0.71172
+   63. RY ( 3) C  3             0.00140     1.27198
+   64. RY ( 4) C  3             0.00095     0.63648
+   65. RY ( 5) C  3             0.00063     1.17078
+   66. RY ( 6) C  3             0.00022     1.99569
+   67. RY ( 7) C  3             0.00006     2.22369
+   68. RY ( 8) C  3             0.00002     1.77665
+   69. RY ( 9) C  3             0.00000     2.12241
+   70. RY ( 1) N  4             0.00269     0.88539
+   71. RY ( 2) N  4             0.00118     1.12709
+   72. RY ( 3) N  4             0.00048     2.17791
+   73. RY ( 4) N  4             0.00027     0.95633
+   74. RY ( 5) N  4             0.00010     1.92602
+   75. RY ( 6) N  4             0.00008     1.87819
+   76. RY ( 7) N  4             0.00007     2.50148
+   77. RY ( 8) N  4             0.00002     2.12483
+   78. RY ( 9) N  4             0.00002     2.55951
+   79. RY ( 1) C  5             0.01396     0.68640
+   80. RY ( 2) C  5             0.00780     0.97992
+   81. RY ( 3) C  5             0.00291     0.55307
+   82. RY ( 4) C  5             0.00217     1.87745
+   83. RY ( 5) C  5             0.00140     2.23178
+   84. RY ( 6) C  5             0.00099     1.55947
+   85. RY ( 7) C  5             0.00095     1.81431
+   86. RY ( 8) C  5             0.00035     1.10517
+   87. RY ( 9) C  5             0.00001     2.07075
+   88. RY ( 1) C  6             0.00211     0.61318
+   89. RY ( 2) C  6             0.00164     0.96282
+   90. RY ( 3) C  6             0.00040     0.55442
+   91. RY ( 4) C  6             0.00014     1.17556
+   92. RY ( 5) C  6             0.00003     2.16993
+   93. RY ( 6) C  6             0.00002     1.83640
+   94. RY ( 7) C  6             0.00001     2.09852
+   95. RY ( 8) C  6             0.00001     1.77706
+   96. RY ( 9) C  6             0.00000     2.10409
+   97. RY ( 1) O  7             0.00239     1.13967
+   98. RY ( 2) O  7             0.00070     1.58225
+   99. RY ( 3) O  7             0.00056     1.61160
+  100. RY ( 4) O  7             0.00040     2.20130
+  101. RY ( 5) O  7             0.00034     1.87299
+  102. RY ( 6) O  7             0.00008     2.39341
+  103. RY ( 7) O  7             0.00007     2.88406
+  104. RY ( 8) O  7             0.00002     2.82711
+  105. RY ( 9) O  7             0.00000     2.35269
+  106. RY ( 1) H  8             0.00108     0.42450
+  107. RY ( 2) H  8             0.00015     1.68676
+  108. RY ( 3) H  8             0.00014     1.68718
+  109. RY ( 4) H  8             0.00002     2.18257
+  110. RY ( 1) H  9             0.00230     0.36718
+  111. RY ( 2) H  9             0.00016     1.71630
+  112. RY ( 3) H  9             0.00014     1.73154
+  113. RY ( 4) H  9             0.00003     2.19405
+  114. RY ( 1) H 10             0.00230     0.36712
+  115. RY ( 2) H 10             0.00016     1.71626
+  116. RY ( 3) H 10             0.00014     1.73175
+  117. RY ( 4) H 10             0.00003     2.19394
+  118. RY ( 1) H 11             0.00087     0.37339
+  119. RY ( 2) H 11             0.00023     1.60946
+  120. RY ( 3) H 11             0.00008     2.29775
+  121. RY ( 4) H 11             0.00003     1.84402
+  122. RY ( 1) H 12             0.00185     0.37471
+  123. RY ( 2) H 12             0.00013     1.70886
+  124. RY ( 3) H 12             0.00013     1.69324
+  125. RY ( 4) H 12             0.00003     2.24854
+  126. RY ( 1) H 13             0.00190     0.38409
+  127. RY ( 2) H 13             0.00016     1.72168
+  128. RY ( 3) H 13             0.00015     1.72905
+  129. RY ( 4) H 13             0.00002     2.19684
+  130. RY ( 1) H 14             0.00190     0.38387
+  131. RY ( 2) H 14             0.00016     1.72172
+  132. RY ( 3) H 14             0.00015     1.72916
+  133. RY ( 4) H 14             0.00002     2.19649
+          -------------------------------
+                 Total Lewis   51.01441  ( 98.1046%)
+           Valence non-Lewis    0.89157  (  1.7146%)
+           Rydberg non-Lewis    0.09402  (  0.1808%)
+          -------------------------------
+               Total unit  1   52.00000  (100.0000%)
+              Charge unit  1    0.00000
+
+ $CHOOSE
+   LONE 4 1 7 2 END
+   BOND S 1 2 S 1 8 S 1 9 S 1 10 D 2 3 S 2 7 S 3 4 S 3 11 D 4 5 S 5 6 S 5 7
+        S 6 12 S 6 13 S 6 14 END
+ $END
+
+ Maximum scratch memory used by NBO was 289377 words
+ Maximum scratch memory used by GENNBO was 18683 words
+
+---------------------------------
+NBO DESCRIPTION AS STORED IN ORCA
+---------------------------------
+
+ ----------------------------------------------
+ NBO    Occ      Type          Atoms           
+ ----------------------------------------------
+  0   1.99915 : CORE          0C             
+  1   1.99876 : CORE          1C             
+  2   1.99885 : CORE          2C             
+  3   1.99928 : CORE          3N             
+  4   1.99908 : CORE          4C             
+  5   1.99916 : CORE          5C             
+  6   1.99963 : CORE          6O             
+  7   1.98408 : BOND          0C    1C       
+  8   1.97746 : BOND          0C    7H       
+  9   1.97457 : BOND          0C    8H       
+ 10   1.97457 : BOND          0C    9H       
+ 11   1.98603 : BOND          1C    2C       
+ 12   1.87179 : BOND          1C    2C       
+ 13   1.98402 : BOND          1C    6O       
+ 14   1.96700 : BOND          2C    3N       
+ 15   1.98214 : BOND          2C   10H       
+ 16   1.98674 : BOND          3N    4C       
+ 17   1.88084 : BOND          3N    4C       
+ 18   1.98166 : BOND          4C    5C       
+ 19   1.98949 : BOND          4C    6O       
+ 20   1.97760 : BOND          5C   11H       
+ 21   1.97222 : BOND          5C   12H       
+ 22   1.97222 : BOND          5C   13H       
+ 23   1.90807 : LONE-PAIR     3N             
+ 24   1.96758 : LONE-PAIR     6O             
+ 25   1.68243 : LONE-PAIR     6O             
+ 26   0.01997 : ANTIBOND      0C    1C       
+ 27   0.00477 : ANTIBOND      0C    7H       
+ 28   0.01273 : ANTIBOND      0C    8H       
+ 29   0.01273 : ANTIBOND      0C    9H       
+ 30   0.03258 : ANTIBOND      1C    2C       
+ 31   0.26697 : ANTIBOND      1C    2C       
+ 32   0.04218 : ANTIBOND      1C    6O       
+ 33   0.01242 : ANTIBOND      2C    3N       
+ 34   0.01995 : ANTIBOND      2C   10H       
+ 35   0.02501 : ANTIBOND      3N    4C       
+ 36   0.31810 : ANTIBOND      3N    4C       
+ 37   0.02590 : ANTIBOND      4C    5C       
+ 38   0.07240 : ANTIBOND      4C    6O       
+ 39   0.00416 : ANTIBOND      5C   11H       
+ 40   0.01085 : ANTIBOND      5C   12H       
+ 41   0.01085 : ANTIBOND      5C   13H       
+ 42   0.00281 : RYDBERG       0C             
+ 43   0.00177 : RYDBERG       0C             
+ 44   0.00053 : RYDBERG       0C             
+ 45   0.00010 : RYDBERG       0C             
+ 46   0.00003 : RYDBERG       0C             
+ 47   0.00002 : RYDBERG       0C             
+ 48   0.00002 : RYDBERG       0C             
+ 49   0.00001 : RYDBERG       0C             
+ 50   0.00000 : RYDBERG       0C             
+ 51   0.00577 : RYDBERG       1C             
+ 52   0.00451 : RYDBERG       1C             
+ 53   0.00230 : RYDBERG       1C             
+ 54   0.00134 : RYDBERG       1C             
+ 55   0.00122 : RYDBERG       1C             
+ 56   0.00102 : RYDBERG       1C             
+ 57   0.00056 : RYDBERG       1C             
+ 58   0.00035 : RYDBERG       1C             
+ 59   0.00001 : RYDBERG       1C             
+ 60   0.00617 : RYDBERG       2C             
+ 61   0.00333 : RYDBERG       2C             
+ 62   0.00140 : RYDBERG       2C             
+ 63   0.00095 : RYDBERG       2C             
+ 64   0.00063 : RYDBERG       2C             
+ 65   0.00022 : RYDBERG       2C             
+ 66   0.00006 : RYDBERG       2C             
+ 67   0.00002 : RYDBERG       2C             
+ 68   0.00000 : RYDBERG       2C             
+ 69   0.00269 : RYDBERG       3N             
+ 70   0.00118 : RYDBERG       3N             
+ 71   0.00048 : RYDBERG       3N             
+ 72   0.00027 : RYDBERG       3N             
+ 73   0.00010 : RYDBERG       3N             
+ 74   0.00008 : RYDBERG       3N             
+ 75   0.00007 : RYDBERG       3N             
+ 76   0.00002 : RYDBERG       3N             
+ 77   0.00002 : RYDBERG       3N             
+ 78   0.01396 : RYDBERG       4C             
+ 79   0.00780 : RYDBERG       4C             
+ 80   0.00291 : RYDBERG       4C             
+ 81   0.00217 : RYDBERG       4C             
+ 82   0.00140 : RYDBERG       4C             
+ 83   0.00099 : RYDBERG       4C             
+ 84   0.00095 : RYDBERG       4C             
+ 85   0.00035 : RYDBERG       4C             
+ 86   0.00001 : RYDBERG       4C             
+ 87   0.00211 : RYDBERG       5C             
+ 88   0.00164 : RYDBERG       5C             
+ 89   0.00040 : RYDBERG       5C             
+ 90   0.00014 : RYDBERG       5C             
+ 91   0.00003 : RYDBERG       5C             
+ 92   0.00002 : RYDBERG       5C             
+ 93   0.00001 : RYDBERG       5C             
+ 94   0.00001 : RYDBERG       5C             
+ 95   0.00000 : RYDBERG       5C             
+ 96   0.00239 : RYDBERG       6O             
+ 97   0.00070 : RYDBERG       6O             
+ 98   0.00056 : RYDBERG       6O             
+ 99   0.00040 : RYDBERG       6O             
+100   0.00034 : RYDBERG       6O             
+101   0.00008 : RYDBERG       6O             
+102   0.00007 : RYDBERG       6O             
+103   0.00002 : RYDBERG       6O             
+104   0.00000 : RYDBERG       6O             
+105   0.00108 : RYDBERG       7H             
+106   0.00015 : RYDBERG       7H             
+107   0.00014 : RYDBERG       7H             
+108   0.00002 : RYDBERG       7H             
+109   0.00230 : RYDBERG       8H             
+110   0.00016 : RYDBERG       8H             
+111   0.00014 : RYDBERG       8H             
+112   0.00003 : RYDBERG       8H             
+113   0.00230 : RYDBERG       9H             
+114   0.00016 : RYDBERG       9H             
+115   0.00014 : RYDBERG       9H             
+116   0.00003 : RYDBERG       9H             
+117   0.00087 : RYDBERG      10H             
+118   0.00023 : RYDBERG      10H             
+119   0.00008 : RYDBERG      10H             
+120   0.00003 : RYDBERG      10H             
+121   0.00185 : RYDBERG      11H             
+122   0.00013 : RYDBERG      11H             
+123   0.00013 : RYDBERG      11H             
+124   0.00003 : RYDBERG      11H             
+125   0.00190 : RYDBERG      12H             
+126   0.00016 : RYDBERG      12H             
+127   0.00015 : RYDBERG      12H             
+128   0.00002 : RYDBERG      12H             
+129   0.00190 : RYDBERG      13H             
+130   0.00016 : RYDBERG      13H             
+131   0.00015 : RYDBERG      13H             
+132   0.00002 : RYDBERG      13H             
+
+------------------------------------
+NBO MULLIKEN ATOM POPULATIONS PER MO
+------------------------------------
+
+                      0         1         2         3         4         5   
+                   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+                   1.99915   1.99876   1.99885   1.99928   1.99908   1.99916
+                  --------  --------  --------  --------  --------  --------
+  0 C               100.6      -0.2      -0.0      -0.0       0.0      -0.0
+  1 C                -0.5     100.9      -0.7      -0.0      -0.0       0.0
+  2 C                 0.0      -0.5     100.9      -0.0      -0.0      -0.0
+  3 N                 0.0      -0.0      -0.2     100.2      -0.3      -0.0
+  4 C                 0.0      -0.0      -0.0      -0.1     100.7      -0.5
+  5 C                -0.0       0.0       0.0       0.0      -0.3     100.6
+
+                      6         7         8         9        10        11   
+                   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+                   1.99963   1.98408   1.97746   1.97457   1.97457   1.98603
+                  --------  --------  --------  --------  --------  --------
+  0 C                -0.0      50.5      49.2      50.8      50.8      -1.3
+  1 C                -0.0      48.3       1.9       0.4       0.4      49.9
+  2 C                -0.0       2.1      -0.8      -0.0      -0.0      52.5
+  3 N                -0.0       0.0      -0.0      -0.0      -0.0      -2.2
+  4 C                -0.0      -0.1       0.0      -0.0      -0.0       3.4
+  5 C                -0.0       0.0       0.0       0.0       0.0       0.4
+  6 O               100.0      -0.4      -0.1      -0.0      -0.0      -1.4
+  7 H                -0.0      -0.5      50.0      -0.1      -0.1      -0.1
+  8 H                 0.0       0.0      -0.1      48.9      -0.0       0.0
+  9 H                 0.0       0.0      -0.1      -0.0      48.9       0.0
+ 10 H                -0.0      -0.0       0.0       0.0       0.0      -1.1
+
+                     12        13        14        15        16        17   
+                   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+                   1.87179   1.98402   1.96700   1.98214   1.98674   1.88084
+                  --------  --------  --------  --------  --------  --------
+  0 C                -0.4       0.4      -0.0      -0.4       0.1       0.0
+  1 C                49.9      32.0      -1.0      -1.6      -2.5      -0.1
+  2 C                52.4      -1.9      43.9      50.8       3.9      -1.1
+  3 N                -1.2      -1.0      56.8      -1.1      53.4      57.5
+  4 C                 0.1       1.9       1.3      -0.1      45.7      44.6
+  5 C                 0.0       0.1       0.1       0.0      -0.2      -0.4
+  6 O                -0.7      68.7      -0.4      -0.1      -0.4      -0.5
+ 10 H                 0.1      -0.0      -0.7      52.4       0.1       0.0
+
+                     18        19        20        21        22        23   
+                   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+                   1.98166   1.98949   1.97760   1.97222   1.97222   1.90807
+                  --------  --------  --------  --------  --------  --------
+  0 C                 0.0       0.1       0.0       0.0       0.0       0.0
+  1 C                -0.1       4.7       0.0      -0.0      -0.0      -0.2
+  2 C                -0.1      -3.4      -0.1       0.0       0.0      -2.1
+  3 N                -0.6      -0.3      -0.5      -0.0      -0.0     106.2
+  4 C                49.9      31.9       2.5       0.5       0.5      -3.6
+  5 C                51.5      -0.4      49.6      50.9      50.8      -0.2
+  6 O                -0.4      67.5      -0.1      -0.0      -0.0      -0.1
+ 11 H                -0.3      -0.0      48.8      -0.1      -0.1       0.0
+ 12 H                 0.0      -0.0      -0.1      48.9      -0.1       0.0
+ 13 H                 0.0      -0.0      -0.1      -0.1      48.9       0.0
+
+                     24        25        26        27        28        29   
+                   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+                   1.96758   1.68243   0.01997   0.00477   0.01273   0.01273
+                  --------  --------  --------  --------  --------  --------
+  0 C                -0.2      -0.0      47.1      44.4      44.3      44.3
+  1 C                -1.1      -1.2      49.7      -0.3      -0.5      -0.5
+  2 C                -0.1      -0.0       2.7       0.2      -0.4      -0.4
+  3 N                -0.2       0.0      -0.7       0.0       0.0       0.0
+  4 C                -0.7      -1.3       1.5      -0.0      -0.0      -0.0
+  5 C                -0.2      -0.0       0.4      -0.0      -0.0      -0.0
+  6 O               102.5     102.6       0.6      -0.3      -0.0      -0.0
+  7 H                -0.0      -0.0      -0.6      55.9      -0.0      -0.0
+  8 H                 0.0       0.0      -0.4       0.0      56.7      -0.0
+  9 H                 0.0       0.0      -0.4       0.0      -0.0      56.7
+ 10 H                -0.0      -0.0       0.1       0.0      -0.0      -0.0
+
+                     30        31        32        33        34        35   
+                   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+                   0.03258   0.26697   0.04218   0.01242   0.01995   0.02501
+                  --------  --------  --------  --------  --------  --------
+  0 C                 2.3      -0.3       1.3      -1.2       0.1       0.1
+  1 C                48.0      51.3      63.8       4.8       0.6       1.1
+  2 C                48.7      49.9       2.6      50.8      44.8       1.3
+  3 N                 0.5      -0.5      -0.8      43.2      -0.0      46.4
+  4 C                 0.2       0.0       3.3       2.9       0.2      49.3
+  5 C                 0.0      -0.0      -0.1      -1.0       0.1       1.7
+  6 O                 0.8      -0.4      30.4      -0.2      -0.3       0.6
+  7 H                 0.1       0.0      -0.3       0.2       0.0       0.0
+  8 H                -0.3      -0.0       0.0       0.0      -0.0      -0.0
+  9 H                -0.3      -0.0       0.0       0.0      -0.0      -0.0
+ 10 H                 0.1       0.1      -0.2       0.2      54.6       0.0
+ 11 H                 0.0      -0.0      -0.0       0.1      -0.0      -0.0
+ 12 H                -0.0       0.0       0.0      -0.0      -0.0      -0.2
+ 13 H                -0.0       0.0       0.0      -0.0      -0.0      -0.2
+
+                     36        37        38        39        40        41   
+                   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+                   0.31810   0.02590   0.07240   0.00416   0.01085   0.01085
+                  --------  --------  --------  --------  --------  --------
+  0 C                -0.0       0.4       0.2      -0.0      -0.0      -0.0
+  1 C                 0.1       2.3       3.6      -0.1      -0.0      -0.0
+  2 C                -0.3       0.1      -0.9       0.0      -0.0      -0.0
+  3 N                43.7       2.0       0.3       0.0      -0.2      -0.2
+  4 C                57.2      48.9      66.2      -0.6      -0.6      -0.6
+  5 C                -0.1      47.1       1.1      44.1      44.4      44.4
+  6 O                -0.6       0.6      29.8      -0.2      -0.0      -0.0
+ 10 H                 0.0       0.1      -0.0      -0.0      -0.0      -0.0
+ 11 H                 0.0      -0.6      -0.2      56.7      -0.0      -0.0
+ 12 H                -0.0      -0.5       0.0      -0.0      56.5      -0.0
+ 13 H                -0.0      -0.5       0.0      -0.0      -0.0      56.5
+
+                     42        43        44        45        46        47   
+                   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+                   0.00281   0.00177   0.00053   0.00010   0.00003   0.00002
+                  --------  --------  --------  --------  --------  --------
+  0 C               141.7     125.2     251.1     173.4     112.6     119.4
+  1 C               -15.7      -5.3    -132.1     -20.6      -4.0      -4.2
+  2 C                 1.0      -0.0      -9.8      -0.2       0.9       0.0
+  3 N                -0.0       0.0       0.3      -0.0      -0.0       0.0
+  4 C                -0.1      -0.1      -2.8      -0.2      -0.1      -0.0
+  5 C                -0.0      -0.0      -0.7      -0.1      -0.0      -0.0
+  6 O                 0.1      -0.1      -0.8      -0.1      -0.2      -0.1
+  7 H               -16.6      -1.6      -1.7     -21.1      -4.2       0.5
+  8 H                -5.2      -9.0      -1.5     -15.5      -2.5      -8.4
+  9 H                -5.2      -9.1      -1.4     -15.5      -2.5      -7.2
+ 10 H                 0.0       0.0      -0.7      -0.0      -0.1      -0.0
+
+                     48        49        50        51        52        53   
+                   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+                   0.00002   0.00001   0.00000   0.00577   0.00451   0.00230
+                  --------  --------  --------  --------  --------  --------
+  0 C               123.1     110.3     111.7      -2.6     -32.5      -5.8
+  1 C                -2.7      -0.1      -2.1     181.0     251.0     116.4
+  2 C                 0.3      -0.0       0.1     -38.4    -104.2      -7.7
+  3 N                -0.0      -0.0      -0.0       2.0       1.6      -0.0
+  4 C                -0.0      -0.0      -0.1     -24.2      -4.6      -1.0
+  5 C                -0.0      -0.0      -0.0      -1.6      -0.2      -0.1
+  6 O                -0.0      -0.0      -0.2     -15.6     -11.4      -1.6
+  7 H                -7.2      -2.1      -4.3      -0.0       0.1      -0.0
+  8 H                -6.1      -4.1      -2.6      -0.3       0.7      -0.1
+  9 H                -7.2      -4.1      -2.6      -0.3       0.7      -0.1
+ 10 H                -0.0      -0.0      -0.0       0.0      -1.3      -0.1
+
+                     54        55        56        57        58        59   
+                   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+                   0.00134   0.00122   0.00102   0.00056   0.00035   0.00001
+                  --------  --------  --------  --------  --------  --------
+  0 C                -0.0     -88.4     -46.6      -4.3      -4.9      -2.1
+  1 C               103.4     223.2     163.8     106.4     120.8     110.0
+  2 C                -0.7     -34.4     -12.6      -2.1     -10.2      -4.9
+  3 N                -0.0      -1.6      -0.3      -0.0       1.2       0.0
+  4 C                 0.0      -0.3      -0.2      -0.1      -4.6      -1.1
+  5 C                 0.0      -0.2      -0.0      -0.0      -1.2      -0.2
+  6 O                -2.5      -0.0      -4.1      -0.2      -0.9      -1.5
+  7 H                 0.0       2.0       1.0      -0.1      -0.2      -0.0
+  8 H                -0.1      -0.2      -0.5       0.2      -0.0      -0.1
+  9 H                -0.1      -0.2      -0.5       0.2      -0.0      -0.1
+
+                     60        61        62        63        64        65   
+                   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+                   0.00617   0.00333   0.00140   0.00095   0.00063   0.00022
+                  --------  --------  --------  --------  --------  --------
+  0 C                 2.4      -6.4       0.0      -1.5      -0.0       0.3
+  1 C               -18.2    -103.9      -3.5     -59.2      -3.6     -11.7
+  2 C               167.3     232.7     105.6     205.7     107.5     128.2
+  3 N               -29.4      -7.4      -0.6      -6.6      -3.7      -6.1
+  4 C               -13.0      -4.4      -0.2      -0.5       0.1      -1.1
+  5 C                -0.4      -0.3      -0.0       0.1      -0.0      -0.6
+  6 O                -1.9       0.4      -0.1      -1.5       0.0      -0.1
+  7 H                -0.6      -1.0      -0.0      -0.6       0.0      -0.1
+  8 H                -0.1       0.2      -0.0       0.0       0.0      -0.0
+  9 H                -0.1       0.2      -0.0       0.0       0.0      -0.0
+ 10 H                -6.0     -10.2      -1.1     -35.9      -0.3      -8.7
+
+                     66        67        68        69        70        71   
+                   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+                   0.00006   0.00002   0.00000   0.00269   0.00118   0.00048
+                  --------  --------  --------  --------  --------  --------
+  0 C                -0.1      -0.0      -0.1      -0.0       0.1      -0.0
+  1 C                -7.3      -2.7      -4.0      -0.4      -2.6      -0.0
+  2 C               117.3     105.6     111.6      -3.2     -28.3      -1.0
+  3 N                -7.4      -0.8      -3.4     109.4     160.0     102.4
+  4 C                -0.4      -0.1      -0.8      -5.2     -28.9      -1.4
+  5 C                -0.1      -0.0      -0.2       0.1       2.9      -0.0
+  6 O                 0.0      -0.1      -0.0      -0.4      -2.6      -0.1
+  7 H                -0.0      -0.0      -0.0      -0.0      -0.1      -0.0
+ 10 H                -1.9      -1.8      -3.2      -0.0       0.2      -0.0
+ 11 H                -0.0      -0.0      -0.0      -0.3      -0.7      -0.0
+
+                     72        73        74        75        76        77   
+                   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+                   0.00027   0.00010   0.00008   0.00007   0.00002   0.00002
+                  --------  --------  --------  --------  --------  --------
+  0 C                 0.0       0.1       0.2       0.0      -0.0      -0.0
+  1 C                 0.0       3.5       3.4       0.2      -0.0      -0.2
+  2 C                -3.6     -13.3     -14.4      -3.3      -0.9      -0.6
+  3 N               108.2     135.7     136.7     108.9     103.2     104.8
+  4 C                -4.5     -20.9     -21.4      -4.8      -2.1      -3.0
+  5 C                -0.0      -4.6      -2.4       0.0      -0.1      -0.5
+  6 O                -0.1      -0.2      -1.2      -0.7      -0.1      -0.2
+ 10 H                -0.1      -0.2      -0.5      -0.2      -0.0      -0.1
+ 11 H                -0.0      -0.0      -0.1      -0.1      -0.0      -0.0
+
+                     78        79        80        81        82        83   
+                   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+                   0.01396   0.00780   0.00291   0.00217   0.00140   0.00099
+                  --------  --------  --------  --------  --------  --------
+  0 C                -0.0      -1.2      -0.1      -0.0      -0.0      -2.0
+  1 C                -1.7     -22.1      -0.8      -0.1      -0.8     -10.0
+  2 C               -10.2      -6.5      -0.2      -0.0       0.3      -0.5
+  3 N               -45.7      -8.2      -5.0      -2.3      -9.1     -12.1
+  4 C               181.3     152.8     117.1     103.2     115.4     178.9
+  5 C               -17.3      -3.1      -7.4      -0.2      -1.9     -49.0
+  6 O                -7.5     -10.9      -3.5      -0.6      -3.2      -5.9
+ 10 H                -0.2      -0.2      -0.0      -0.0      -0.0      -0.6
+ 11 H                 0.9      -0.2      -0.0      -0.0      -0.3       0.5
+ 12 H                 0.2      -0.2      -0.0      -0.0      -0.2       0.3
+ 13 H                 0.2      -0.2      -0.0      -0.0      -0.2       0.2
+
+                     84        85        86        87        88        89   
+                   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+                   0.00095   0.00035   0.00001   0.00211   0.00164   0.00040
+                  --------  --------  --------  --------  --------  --------
+  0 C                -0.0       0.0      -0.1      -0.0      -0.0      -0.7
+  1 C                -0.0       0.1      -1.1      -0.2      -0.1      -3.4
+  2 C                -0.0       0.2      -0.5      -0.2      -0.0      -1.2
+  3 N                -0.4      -5.8      -3.9      -0.1      -0.1      -5.8
+  4 C               103.0     220.1     111.4     -14.6      -5.3    -151.0
+  5 C                -2.3    -115.9      -4.0     142.0     125.6     269.4
+  6 O                -0.3      -0.6      -1.6       0.1      -0.1      -0.5
+ 10 H                -0.0      -0.0      -0.0      -0.0      -0.0      -0.2
+ 11 H                -0.1       1.4      -0.0     -16.0      -1.5      -2.5
+ 12 H                 0.0       0.3      -0.1      -5.5      -9.2      -2.1
+ 13 H                 0.1       0.3      -0.1      -5.5      -9.3      -2.1
+
+                     90        91        92        93        94        95   
+                   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+                   0.00014   0.00003   0.00002   0.00001   0.00001   0.00000
+                  --------  --------  --------  --------  --------  --------
+  1 C                -0.1      -0.1      -0.0      -0.0      -0.0      -0.1
+  2 C                -0.1      -0.0       0.0      -0.0      -0.0       0.0
+  3 N                -0.3       0.1      -0.1      -0.0      -0.1       0.0
+  4 C               -15.8      -4.0      -2.1      -0.5      -3.4      -3.2
+  5 C               167.6     115.2     119.0     109.0     120.0     114.4
+  6 O                -0.0      -0.3      -0.0      -0.0      -0.1      -0.2
+ 11 H               -19.1      -6.6      -6.0      -1.9       0.3      -4.7
+ 12 H               -16.0      -2.1      -5.4      -3.3      -8.3      -3.1
+ 13 H               -16.0      -2.1      -5.4      -3.3      -8.4      -3.1
+
+                     96        97        98        99       100       101   
+                   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+                   0.00239   0.00070   0.00056   0.00040   0.00034   0.00008
+                  --------  --------  --------  --------  --------  --------
+  0 C                 0.1       0.8      -0.0      -0.1      -1.6      -0.4
+  1 C                -5.2      -9.7      -1.1      -1.8     -13.0      -4.8
+  2 C                -1.0      -1.9      -0.0      -0.0       0.2       0.4
+  3 N                -1.0      -3.7      -0.1      -0.0      -0.4       0.0
+  4 C                -5.3     -17.0      -2.3      -0.5      -3.3      -4.3
+  5 C                 0.1       0.9      -0.1      -0.0      -0.6      -0.7
+  6 O               112.5     131.2     103.8     102.6     119.2     110.0
+  7 H                -0.0      -0.0      -0.0      -0.0      -0.1      -0.0
+  8 H                -0.0      -0.0      -0.0      -0.0      -0.1      -0.0
+  9 H                -0.0      -0.0      -0.0      -0.0      -0.1      -0.0
+ 11 H                -0.0      -0.2      -0.0       0.0      -0.0      -0.0
+ 12 H                -0.0      -0.1      -0.0      -0.0      -0.1      -0.0
+ 13 H                -0.0      -0.1      -0.0      -0.0      -0.1      -0.0
+
+                    102       103       104       105       106       107   
+                   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+                   0.00007   0.00002   0.00000   0.00108   0.00015   0.00014
+                  --------  --------  --------  --------  --------  --------
+  0 C                 0.5      -0.0      -0.1     -39.5      -3.0      -2.7
+  1 C                -2.8      -0.6      -1.3       2.9      -0.2      -0.3
+  2 C                -0.3       0.1      -0.1      -2.1      -0.0       0.0
+  3 N                -0.0       0.0      -0.1      -0.2      -0.0      -0.0
+  4 C                -1.5      -1.3      -1.4       0.0      -0.0      -0.0
+  5 C                 0.2       0.0      -0.1       0.0      -0.0      -0.0
+  6 O               103.9     101.8     103.1       0.1      -0.0      -0.2
+  7 H                 0.0      -0.0      -0.0     140.0     103.8     103.9
+  8 H                -0.0      -0.0      -0.0      -0.3      -0.3      -0.3
+  9 H                -0.0      -0.0      -0.0      -0.3      -0.3      -0.3
+ 10 H                 0.0      -0.0      -0.0      -0.5      -0.0      -0.0
+
+                    108       109       110       111       112       113   
+                   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+                   0.00002   0.00230   0.00016   0.00014   0.00003   0.00230
+                  --------  --------  --------  --------  --------  --------
+  0 C                -8.5     -35.5      -3.1      -3.4      -7.8     -35.5
+  1 C                -0.0      -0.3      -0.1      -0.0      -0.1      -0.3
+  2 C                -0.1       0.4      -0.0      -0.1      -0.0       0.4
+  6 O                -0.0      -0.1      -0.0      -0.1      -0.0      -0.1
+  7 H               109.0      -0.3      -0.4      -0.2      -0.1      -0.3
+  8 H                -0.1     136.0     104.1     104.5     108.2      -0.1
+  9 H                -0.1      -0.1      -0.3      -0.6      -0.1     136.0
+
+                    114       115       116       117       118       119   
+                   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+                   0.00016   0.00014   0.00003   0.00087   0.00023   0.00008
+                  --------  --------  --------  --------  --------  --------
+  0 C                -3.1      -3.4      -7.8      -0.6      -0.0       0.0
+  1 C                -0.1      -0.0      -0.1      -2.8      -0.1       0.1
+  2 C                -0.0      -0.1      -0.0     -45.6      -3.1      -8.6
+  3 N                -0.0      -0.0      -0.0      -0.3      -0.1      -0.1
+  4 C                -0.0      -0.0      -0.0      -0.7      -0.0      -0.1
+  5 C                -0.0      -0.0      -0.0      -0.2      -0.0      -0.0
+  6 O                -0.0      -0.1      -0.0       0.0      -0.0      -0.0
+  7 H                -0.4      -0.2      -0.1      -0.6      -0.0      -0.1
+  8 H                -0.3      -0.6      -0.1       0.0      -0.0      -0.0
+  9 H               104.1     104.5     108.2       0.0      -0.0      -0.0
+ 10 H                -0.0      -0.0      -0.0     150.7     103.3     108.8
+
+                    120       121       122       123       124       125   
+                   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+                   0.00003   0.00185   0.00013   0.00013   0.00003   0.00190
+                  --------  --------  --------  --------  --------  --------
+  2 C                -4.5      -0.1      -0.0      -0.0      -0.0       0.0
+  3 N                -1.0      -0.9      -0.2      -0.0      -0.0       0.1
+  4 C                -0.1       2.4      -0.3      -0.1      -0.1       0.2
+  5 C                 0.0     -39.9      -2.6      -3.0      -8.3     -35.9
+  6 O                -0.1       0.0      -0.3      -0.0      -0.1      -0.1
+ 10 H               105.6       0.0      -0.0      -0.0      -0.0       0.0
+ 11 H                -0.0     139.0     104.0     103.8     108.7      -0.3
+ 12 H                -0.0      -0.3      -0.3      -0.3      -0.1     136.0
+ 13 H                -0.0      -0.3      -0.3      -0.3      -0.1      -0.1
+
+                    126       127       128       129       130       131   
+                   0.00000   0.00000   0.00000   0.00000   0.00000   0.00000
+                   0.00016   0.00015   0.00002   0.00190   0.00016   0.00015
+                  --------  --------  --------  --------  --------  --------
+  3 N                -0.1      -0.1      -0.0       0.1      -0.1      -0.1
+  4 C                -0.1      -0.0      -0.1       0.2      -0.1      -0.0
+  5 C                -3.1      -3.4      -7.9     -35.9      -3.1      -3.4
+  6 O                -0.0      -0.2      -0.0      -0.1      -0.0      -0.2
+ 11 H                -0.4      -0.2      -0.1      -0.3      -0.4      -0.2
+ 12 H               104.1     104.5     108.3      -0.1      -0.4      -0.5
+ 13 H                -0.4      -0.5      -0.1     136.0     104.1     104.5
+
+                    132   
+                   0.00000
+                   0.00002
+                  --------
+  4 C                -0.1
+  5 C                -7.9
+ 12 H                -0.1
+ 13 H               108.3
+
+Storing NBOs: 4712.nbo
+                                    *** NBOs were stored ***
+
+                                *** returned from GENNBO program ***
+
+-------
+TIMINGS
+-------
+
+Total SCF time: 0 days 0 hours 0 min 5 sec 
+
+Total time                  ....       5.075 sec
+Sum of individual times     ....       5.516 sec  (108.7%)
+
+Fock matrix formation       ....       3.253 sec  ( 64.1%)
+  Coulomb formation         ....       1.795 sec  ( 55.2% of F)
+  Split-RI-J                ....       1.788 sec  ( 55.0% of F)
+  XC integration            ....       1.453 sec  ( 44.7% of F)
+    Basis function eval.    ....       0.490 sec  ( 33.8% of XC)
+    Density eval.           ....       0.261 sec  ( 18.0% of XC)
+    XC-Functional eval.     ....       0.096 sec  (  6.6% of XC)
+    XC-Potential eval.      ....       0.573 sec  ( 39.4% of XC)
+Diagonalization             ....       0.021 sec  (  0.4%)
+Density matrix formation    ....       0.002 sec  (  0.0%)
+Population analysis         ....       1.259 sec  ( 24.8%)
+Initial guess               ....       0.333 sec  (  6.6%)
+Orbital Transformation      ....       0.000 sec  (  0.0%)
+Orbital Orthonormalization  ....       0.000 sec  (  0.0%)
+DIIS solution               ....       0.004 sec  (  0.1%)
+SOSCF solution              ....       0.012 sec  (  0.2%)
+Grid generation             ....       0.631 sec  ( 12.4%)
+           ************************************************************
+           *              Shut down parallel processing               *
+           ************************************************************
+
+-------------------------   --------------------
+FINAL SINGLE POINT ENERGY      -324.087309375020
+-------------------------   --------------------
+
+
+                            ***************************************
+                            *     ORCA property calculations      *
+                            ***************************************
+
+                                    ---------------------
+                                    Active property flags
+                                    ---------------------
+   (+) Dipole Moment
+
+
+------------------------------------------------------------------------------
+                       ORCA ELECTRIC PROPERTIES CALCULATION
+------------------------------------------------------------------------------
+
+Dipole Moment Calculation                       ... on
+Quadrupole Moment Calculation                   ... off
+Polarizability Calculation                      ... off
+GBWName                                         ... 4712.gbw
+Electron density file                           ... 4712.scfp.tmp
+
+-------------
+DIPOLE MOMENT
+-------------
+                                X             Y             Z
+Electronic contribution:      1.42325       1.47982       0.00098
+Nuclear contribution   :     -1.99780      -1.93139      -0.00191
+                        -----------------------------------------
+Total Dipole Moment    :     -0.57455      -0.45156      -0.00093
+                        -----------------------------------------
+Magnitude (a.u.)       :      0.73077
+Magnitude (Debye)      :      1.85746
+
+
+Timings for individual modules:
+
+Sum of individual times         ...        6.199 sec (=   0.103 min)
+GTO integral calculation        ...        0.465 sec (=   0.008 min)   7.5 %
+SCF iterations                  ...        5.734 sec (=   0.096 min)  92.5 %
+                             ****ORCA TERMINATED NORMALLY****
+TOTAL RUN TIME: 0 days 0 hours 0 minutes 6 seconds 594 msec
