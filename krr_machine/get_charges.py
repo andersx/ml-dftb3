@@ -34,29 +34,20 @@ if __name__ == "__main__":
     mol.read_xyz(xyz_file)
     mol.generate_atomic_coulomb_matrix()
 
-    # for atom in ["H", "C", "N", "O", "S"]:
-    #     print alpha[atom].shape
-    #     print X[atom].shape
-
-    # print
-
     Ys = np.zeros((mol.natoms))
 
     s = (-0.5 / sigma**2)
+
     print "Running predicition ..."
     for a, atom in enumerate(mol.atomtypes):
 
         Xs = np.reshape(mol.atomic_coulomb_matrix[a], (len(mol.atomic_coulomb_matrix[a]),1))
         
         Ds = l2_distance(Xs, X[atom])
-
         Ds *=s
-        Ks = np.array(np.exp(Ds))
+        np.array(np.exp(Ds, Ds))
 
-        # Ks = np.reshape(Ks, (len(mol.atomic_coulomb_matrix[a])))
-        Ys[a] = np.dot(Ks[0,:], alpha[atom])
-
-
+        Ys[a] = np.dot(Ds[0,:], alpha[atom])
 
     error = np.sum(Ys)
     Ys -= np.mean(Ys)
@@ -64,4 +55,3 @@ if __name__ == "__main__":
     print "Final charges:"
     for i, q in enumerate(Ys):
         print "%s  %12.8f" % (mol.atomtypes[i], q)
-
