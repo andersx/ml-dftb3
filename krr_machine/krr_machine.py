@@ -9,11 +9,8 @@ from scipy.stats import pearsonr
 if __name__ == "__main__":
 
     ntrain = int(sys.argv[1])
-    # if ntrain > 6400:
-    #     print "ERROR: N too large!"
-    #     exit()
+    ntest = int(sys.argv[2])
 
-    ntest = 772
 
     D  = np.load("D.npy")[:ntrain,:ntrain]
     Ds = np.load("D.npy")[:ntrain,-ntest:]
@@ -30,7 +27,7 @@ if __name__ == "__main__":
     sigmas   = [10.0]
     llambdas = [1e-05]
 
-    minmae = 999999999999999999999.9 
+    minmae = float("inf") 
 
     print D.shape
     print Ds.shape
@@ -51,6 +48,7 @@ if __name__ == "__main__":
                 K[i,i] += llambda
 
             alpha = cho_solve(K, Y)
+            np.save("alpha.npy", alpha)
 
             Y_tilde = np.dot(Ks.transpose(), alpha) + offset
 
