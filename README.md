@@ -2,6 +2,8 @@
 
 Iteration-free SCC-DFTB3 using machine learning.
 
+The program uses kernel-ridge regression to make a guess of the self-consistent DFTB3 charges based on the coordinates of your molecules (and an underlying training database). If the guess is close enough to the final solution the SCC-DFTB equations need not be iterated until self-consistency.
+
 ## How to use:
 
 **Initialize the database:** As default you can initialize the machine using the QM7 database, hardcoded in the `generate_descriptors.py` script. Just run this script once, and you should find a file named `mols.cpickle`.
