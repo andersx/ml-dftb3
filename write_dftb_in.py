@@ -158,7 +158,7 @@ if __name__ == "__main__":
     xyz_file = sys.argv[1]
 
     mol = Molecule()
-    mol.read_xyz(xyz_file)
+    mol.from_xyz(xyz_file)
     mol.generate_atomic_coulomb_matrix()
 
     # for atom in ["H", "C", "N", "O", "S"]:
