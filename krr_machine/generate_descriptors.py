@@ -4,7 +4,7 @@
 import os
 
 import numpy as np
-import ezpickle
+import cPickle
 from fml import Molecule
 
 
@@ -27,7 +27,6 @@ if __name__ == "__main__":
 
     filenames = sorted(os.listdir(xyz_dir))
 
-    np.random.seed(666)
     np.random.shuffle(filenames)
 
     mols = []
@@ -36,7 +35,7 @@ if __name__ == "__main__":
 
         print filename
         mol = Molecule()
-        mol.read_xyz(xyz_dir + filename)
+        mol.from_xyz(xyz_dir + filename)
         molid = filename[-8:-4]
         mol.molid = int(molid)
         mol.generate_atomic_coulomb_matrix()
@@ -44,5 +43,6 @@ if __name__ == "__main__":
 
         mols.append(mol)
 
-    ezpickle.save(mols, "mols.cpickle")
+    with open("mols.cpickle", "wb") as f:
+        cPickle.dump(mols, f, protocol=2)
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 
 import numpy as np
-import ezpickle
+import cPickle
 from fml.math import l2_distance
 import sys
 
@@ -10,7 +10,8 @@ if __name__ == "__main__":
 
     natoms = int(sys.argv[1])
 
-    mols = ezpickle.load("mols.cpickle")
+    with open("mols.cpickle", "rb") as f:
+        mols = cPickle.load(f)
 
     target = sys.argv[2]
 

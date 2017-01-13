@@ -12,8 +12,8 @@ for atom in H C N O S
 do
     ./generate_distance_matrix.py $NTRAIN $atom
     ./dump_alpha.py $SIGMA $LAMBDA
-    mv X.npy trainings/$atom\_X.npy
-    mv alpha.npy trainings/$atom\_alpha.npy
+    mv X.npy ../qm7/$atom\_X.npy
+    mv alpha.npy ../qm7/$atom\_alpha.npy
 done
 
 cd ..

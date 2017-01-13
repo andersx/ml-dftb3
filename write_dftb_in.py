@@ -137,18 +137,18 @@ if __name__ == "__main__":
 
     # print "Loading data ..."
     alpha = dict()
-    alpha['H']  = np.load("krr_machine/trainings/H_alpha.npy")
-    alpha['C']  = np.load("krr_machine/trainings/C_alpha.npy")
-    alpha['N']  = np.load("krr_machine/trainings/N_alpha.npy")
-    alpha['O']  = np.load("krr_machine/trainings/O_alpha.npy")
-    alpha['S']  = np.load("krr_machine/trainings/S_alpha.npy")
+    alpha['H']  = np.load("qm7/H_alpha.npy")
+    alpha['C']  = np.load("qm7/C_alpha.npy")
+    alpha['N']  = np.load("qm7/N_alpha.npy")
+    alpha['O']  = np.load("qm7/O_alpha.npy")
+    alpha['S']  = np.load("qm7/S_alpha.npy")
 
     X = dict()
-    X['H'] = np.load("krr_machine/trainings/H_X.npy")
-    X['C'] = np.load("krr_machine/trainings/C_X.npy")
-    X['N'] = np.load("krr_machine/trainings/N_X.npy")
-    X['O'] = np.load("krr_machine/trainings/O_X.npy")
-    X['S'] = np.load("krr_machine/trainings/S_X.npy")
+    X['H'] = np.load("qm7/H_X.npy")
+    X['C'] = np.load("qm7/C_X.npy")
+    X['N'] = np.load("qm7/N_X.npy")
+    X['O'] = np.load("qm7/O_X.npy")
+    X['S'] = np.load("qm7/S_X.npy")
 
     Ks = np.zeros((len(X)))
 
